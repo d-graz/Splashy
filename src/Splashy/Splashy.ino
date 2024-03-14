@@ -1,5 +1,8 @@
+//#define CSPIN 5 // Uncomment this line to use a custom CS pin for the SD card
+
+#include "libraries/Animations/Animations.hpp"
 void setup() {
-  // put your setup code here, to run once:
+  Animations animation;
 
 }
 
