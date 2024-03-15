@@ -14,6 +14,7 @@
 
 #define MATRIX_SIZE 8
 #define ANIMATION_LINE_SIZE (3 + 2 + 2)*MATRIX_SIZE
+#define DATA_PER_LINE 3*MATRIX_SIZE
 
 /**
  * \struct pixel
@@ -49,7 +50,13 @@ class Animations {
          * \brief Returns the pixel matrix.
          * \return A pointer to the pixel matrix.
          */
-        pixel_t** get_matrix();
+        pixel_t* get_matrix();
+
+        /**
+         * \brief Error function
+         */
+        void error();
+
         
 };
 
