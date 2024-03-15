@@ -25,21 +25,7 @@ Animations::Animations(){
 }
 
 bool Animations::open_animation(String file_path){
-    bool sd_status;
-    #ifdef DEBUG
-    Serial.println("Opening animation");
-    #endif
-    #ifdef CSPIN
-    sd_status = SD.begin(CSPIN);
-    #else
-    sd_status = SD.begin();
-    #endif
-    if(!sd_status){
-        #ifdef DEBUG
-        Serial.println("SD card failed to initialize");
-        #endif
-        return false;
-    }
+    this->file.close();
     if (SD.exists(file_path)){
         this->file = SD.open(file_path, FILE_READ);
         if(!this->file){
