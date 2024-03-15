@@ -1,6 +1,7 @@
 /**
  * \file Animations.hpp
  * \brief Header file for the Animations class.
+ * \version 1.0
  */
 
 //WARN: Assure to call open_animation before calling next 
