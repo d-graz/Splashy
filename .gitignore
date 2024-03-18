@@ -36,3 +36,6 @@
 
 # hex build of arduino
 **/*.hex
+
+# Mac 
+**/.DS_Store
