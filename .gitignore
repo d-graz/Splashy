@@ -33,3 +33,6 @@
 
 # Vs code 
 **/.vscode/**
+
+# hex build of arduino
+**/*.hex
