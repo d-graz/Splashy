@@ -3,7 +3,7 @@
  * @brief Pinout configuration for the Splashy project.
  */
 
-//#define SD_CSPIN 5 // Uncomment this line to use a custom CS pin for the SD card
+#define SD_CSPIN 7 // Uncomment this line to use a custom CS pin for the SD card
 
 // configuration for the LED matrix
 #define LED_MATRIX_DATA_PIN 2
