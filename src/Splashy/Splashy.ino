@@ -1,6 +1,5 @@
 //libraries in release mode
 
-
 #define DEBUG
 //libraries in debug mode
 #include "libraries/LedMatrix/LedMatrix.hpp"
