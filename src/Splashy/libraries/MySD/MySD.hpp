@@ -1,7 +1,7 @@
 /**
  * @file MySD.hpp
  * @brief MySD library for simplified SD card operations.
- * @version 1.0
+ * @version 1.1
  * 
  * This library provides a simplified interface for working with SD cards on Arduino.
  * It wraps the functionality of the Arduino SD library.
@@ -36,5 +36,18 @@ bool init_sd();
  * @return A File object representing the opened file. If the file could not be opened, the returned File object will be in a "null" state.
  */
 File open_file(String file_path, char mode);
+
+/**
+ * @brief Reads a line from a file.
+ * 
+ * This function reads a line from a file and stores it in the specified buffer. The buffer should be large enough to hold the line.
+ * The function returns true if a line was successfully read, and false otherwise.
+ * 
+ * @param file The file from which to read the line.
+ * @param buffer The buffer in which to store the line.
+ * @param buffer_size The size of the buffer.
+ * @return true if a line was successfully read, false otherwise.
+ */
+bool read_line(File file, char* buffer, byte buffer_size);
 
 #endif

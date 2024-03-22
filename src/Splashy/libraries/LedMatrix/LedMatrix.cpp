@@ -1,11 +1,12 @@
 /**
  * \file LedMatrix.cpp
  * \brief Source code file for the LedMatrix class.
+ * \version 2.0
  */
 
 #include "LedMatrix.hpp"
 
-LedMatrix::LedMatrix(): lc(LED_MATRIX_DATA_PIN, LED_MATRIX_CLK_PIN, LED_MATRIX_CS_PIN, LED_MATRIX_DEVICES_COUNT){
+LedMatrix::LedMatrix(): Task(), lc(LED_MATRIX_DATA_PIN, LED_MATRIX_CLK_PIN, LED_MATRIX_CS_PIN, LED_MATRIX_DEVICES_COUNT){
     #ifdef DEBUG
     Serial.println(F("Init LedMatrix class"));
     #endif
@@ -15,9 +16,14 @@ LedMatrix::LedMatrix(): lc(LED_MATRIX_DATA_PIN, LED_MATRIX_CLK_PIN, LED_MATRIX_C
         this->lc.clearDisplay(i);
         this->lc.setIntensity(i, DEFAULT_BRIGHTNESS);
     }
+    this->frame_count = 0;
+    this->current_frame = 0;
 }
 
-bool LedMatrix::load_animation(String file_path){
+bool LedMatrix::load_animation(String file_path, byte frame_count){
+    this->file.close();
+    this->frame_count = frame_count;
+    this->current_frame = 0;
     this->file = open_file(file_path, 'r');
     if(!this->file){
         #ifdef DEBUG
@@ -26,6 +32,7 @@ bool LedMatrix::load_animation(String file_path){
         #endif
         return false;
     }
+    this->status = TaskStatus::READY;
     return true;
 }
 
@@ -58,7 +65,18 @@ bool LedMatrix::next_frame(){
         Serial.println(this->animation[i], BIN);
         #endif
     }
-    this->file.read(string,1);
+    control = read_line(this->file, string, ANIMATION_LINE_LENGTH);
+    if (!control){
+        #ifdef DEBUG
+        Serial.println(F("Bad formatting file"));
+        #endif
+        return false;
+    }
+    this->sleep_time_millis = strtol(string, NULL, 10);
+    #ifdef DEBUG
+    Serial.print(F("Sleep time: "));
+    Serial.println(this->sleep_time_millis);
+    #endif
     return true;
 }
 
@@ -79,4 +97,28 @@ void LedMatrix::show_error(){
             this->lc.setRow(display, row, this->error_animation[row]);
         }
     }
+}
+
+bool LedMatrix::next(){
+    if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
+        #ifdef DEBUG
+        Serial.println(F("Task is dead or waiting"));
+        Serial.println("Generated exception in LedMatrix::next()");
+        #endif
+        return false;
+    }
+    if(this->frame_count != 0){
+        if (this->current_frame == this->frame_count){
+            this->status = TaskStatus::HIBERNATED;
+            return true;
+        } else {
+            this->current_frame++;
+        }
+    }
+    if(!this->next_frame()){
+        return false;
+    }
+    this->show_frame();
+    this->update_next_execution_millis();
+    return true;
 }

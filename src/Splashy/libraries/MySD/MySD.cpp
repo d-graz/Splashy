@@ -53,3 +53,28 @@ File open_file(String file_path, char mode){
     #endif
     return file;
 }
+
+//FIXME: handel limit case when the number is just the tight size
+bool read_line(File file, char* buffer, byte buffer_size){
+    bool control;
+    char c;
+    byte i = 0;
+    for(i=0; i<buffer_size; i++){
+        control = file.read(&c, 1);
+        if(!control){
+            #ifdef DEBUG
+            Serial.println(F("End of file"));
+            #endif
+            return false;
+        }
+        if(c == '\n'){
+            buffer[i] = '\0';
+            return true;
+        }
+        buffer[i] = c;
+    }
+    #ifdef DEBUG
+    Serial.println(F("String too large for buffer"));
+    #endif
+    return false;
+}

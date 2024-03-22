@@ -4,71 +4,67 @@
 //libraries in debug mode
 #include "libraries/LedMatrix/LedMatrix.hpp"
 #include "libraries/LedMatrix/LedMatrix.cpp"
+#include "libraries/MySD/MySD.hpp"
 #include "libraries/MySD/MySD.cpp"
+#include "libraries/TaskManagement/TaskManagement.hpp"
+#include "libraries/TaskManagement/TaskManagement.cpp" 
 
 // define
 #define BAUD_RATE 9600
+
+// global variables
 LedMatrix *led_matrix;
+
+// setup
 void setup() {
   // start serial communication
   Serial.begin(BAUD_RATE);
+  delay(2000);
+
   #ifdef DEBUG
   Serial.println(F("Init setup"));
   #endif
+
+  //initialize early led matrix to show error
+  led_matrix = new LedMatrix;
+
   // initialize the SD card
   if(!init_sd()){
     #ifdef DEBUG
     Serial.println(F("Failed to initialize SD card"));
     #endif
+    led_matrix->show_error();
     while (true){
-      delay(1000);
+      delay(600000);
     }
   }
-  led_matrix = new LedMatrix;
+
   #ifdef DEBUG
   Serial.println(F("Setup finished"));
   #endif
 }
 
+// loop
 void loop() {
-  // put your main code here, to run repeatedly:
   #ifdef DEBUG
-  Serial.println(F("Loop"));
+  Serial.println(F("Loop cycle"));
   #endif
-  if(!led_matrix->load_animation("animations/boot.txt")){
+  if(!led_matrix->load_animation("boot.txt", 0)){
     Serial.println("Failed to load boot.txt");
     led_matrix->show_error();
     while (true){
-      delay(1000);
+      delay(600000);
     }
   }
-  for(byte i =0; i <23 ; i++){
-    led_matrix->next_frame();
-    led_matrix->show_frame();
-    delay(500);
-  }
-  if(!led_matrix->load_animation("animations/FillingHeart.txt")){
-    Serial.println("Failed to load FillingHeart.txt");
-    led_matrix->show_error();
-    while (true){
-      delay(1000);
+  unsigned int start_milliseconds = 0, end_milliseconds = 0;
+  while(true){
+    start_milliseconds = millis();
+    if(led_matrix->get_status() == TaskStatus::READY){
+      led_matrix->next();
+      end_milliseconds = millis();
+      start_milliseconds = end_milliseconds - start_milliseconds;
+      Serial.print(F("Cycle time: "));
+      Serial.println(start_milliseconds);
     }
-  }
-  for(byte i =0; i <7 ; i++){
-    led_matrix->next_frame();
-    led_matrix->show_frame();
-    delay(1000);
-  }
-  if(!led_matrix->load_animation("animations/HeartToEye.txt")){
-    Serial.println("Failed to load HeartToEye.txt");
-    led_matrix->show_error();
-    while (true){
-      delay(1000);
-    }
-  }
-  for(byte i =0; i <4 ; i++){
-    led_matrix->next_frame();
-    led_matrix->show_frame();
-    delay(1000);
   }
 }
