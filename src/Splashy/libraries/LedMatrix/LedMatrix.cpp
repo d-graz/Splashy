@@ -47,7 +47,16 @@ bool LedMatrix::next_frame(){
             return false;
         }
         string[ANIMATION_LINE_LENGTH - 1] = '\0';
-        this->animation[i] = strtol(string, NULL, 2);
+        #ifdef DEBUG
+        for(byte j = 0; j < ANIMATION_LINE_LENGTH-1; j++){
+            Serial.print(string[j]);
+        }
+        Serial.println();
+        #endif
+        this->animation[i] = strtol(string + 2, NULL, 2);
+        #ifdef DEBUG
+        Serial.println(this->animation[i], BIN);
+        #endif
     }
     this->file.read(string,1);
     return true;
@@ -67,7 +76,7 @@ void LedMatrix::show_frame(){
 void LedMatrix::show_error(){
     for (byte row = 0; row < MATRIX_SIZE; row++) {
         for(byte display = 0; display < LED_MATRIX_DEVICES_COUNT; display++){
-            lc.setRow(display, row, this->error_animation[row]);
+            this->lc.setRow(display, row, this->error_animation[row]);
         }
     }
 }
