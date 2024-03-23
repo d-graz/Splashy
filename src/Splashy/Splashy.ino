@@ -1,3 +1,9 @@
+//TODOS
+//TODO: add servocontroller class
+//TODO: add state controller class
+
+// LIBRARIES
+
 //libraries in release mode
 
 #define DEBUG
@@ -9,11 +15,16 @@
 #include "libraries/TaskManagement/TaskManagement.hpp"
 #include "libraries/TaskManagement/TaskManagement.cpp" 
 
-// define
+// DEFINE
 #define BAUD_RATE 9600
 
-// global variables
+// GLOBAL VARIABLES
+
+// led matrix object
 LedMatrix *led_matrix;
+
+// scheduler
+Scheduler *scheduler;
 
 // setup
 void setup() {
@@ -27,6 +38,12 @@ void setup() {
 
   //initialize early led matrix to show error
   led_matrix = new LedMatrix;
+
+  //initialize scheduler
+  scheduler = new Scheduler;
+
+  //add led matrix to scheduler
+  scheduler->add_task(led_matrix);
 
   // initialize the SD card
   if(!init_sd()){
@@ -56,15 +73,15 @@ void loop() {
       delay(600000);
     }
   }
-  unsigned int start_milliseconds = 0, end_milliseconds = 0;
   while(true){
-    start_milliseconds = millis();
-    if(led_matrix->get_status() == TaskStatus::READY){
-      led_matrix->next();
-      end_milliseconds = millis();
-      start_milliseconds = end_milliseconds - start_milliseconds;
-      Serial.print(F("Cycle time: "));
-      Serial.println(start_milliseconds);
+    if(!scheduler->executeAll()){
+      #ifdef DEBUG
+      Serial.println(F("Failed to execute all tasks"));
+      #endif
+      led_matrix->show_error();
+      while (true){
+        delay(600000);
+      }
     }
   }
 }

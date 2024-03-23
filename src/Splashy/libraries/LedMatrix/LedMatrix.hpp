@@ -1,7 +1,11 @@
 /**
  * @file LedMatrix.hpp
  * @brief File containing the definition of the LedMatrix class, which is used for controlling a LED matrix.
+ * @version 2.0
  */
+
+//TODO:[HIGH] modify frame count and current frame to be instead a boolean value to indicate if the animation shoulb continuosly loop or not
+//TODO:[HIGH] add a struct that holds the animation sd path and if it should loop or not
 
 #include <Arduino.h>
 #include <LedControl.h>
