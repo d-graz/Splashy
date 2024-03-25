@@ -7,7 +7,7 @@
 #include "LedMatrix.hpp"
 
 LedMatrix::LedMatrix(): Task(), lc(LED_MATRIX_DATA_PIN, LED_MATRIX_CLK_PIN, LED_MATRIX_CS_PIN, LED_MATRIX_DEVICES_COUNT){
-    #ifdef DEBUG
+    #ifdef LEDMATRIX_DEBUG
     Serial.println(F("Init LedMatrix class"));
     #endif
     this->file=File();
@@ -37,7 +37,7 @@ bool LedMatrix::load_animation(String file_path, byte frame_count){
 }
 
 bool LedMatrix::next_frame(){
-    #ifdef DEBUG
+    #ifdef LEDMATRIX_DEBUG
     Serial.println(F("Advancing to the next frame"));
     #endif
     if(!this->file.available()){
@@ -54,14 +54,14 @@ bool LedMatrix::next_frame(){
             return false;
         }
         string[ANIMATION_LINE_LENGTH - 1] = '\0';
-        #ifdef DEBUG
+        #ifdef LEDMATRIX_DEBUG
         for(byte j = 0; j < ANIMATION_LINE_LENGTH-1; j++){
             Serial.print(string[j]);
         }
         Serial.println();
         #endif
         this->animation[i] = strtol(string + 2, NULL, 2);
-        #ifdef DEBUG
+        #ifdef LEDMATRIX_DEBUG
         Serial.println(this->animation[i], BIN);
         #endif
     }
@@ -73,7 +73,7 @@ bool LedMatrix::next_frame(){
         return false;
     }
     this->sleep_time_millis = strtol(string, NULL, 10);
-    #ifdef DEBUG
+    #ifdef LEDMATRIX_DEBUG
     Serial.print(F("Sleep time: "));
     Serial.println(this->sleep_time_millis);
     #endif
@@ -81,7 +81,7 @@ bool LedMatrix::next_frame(){
 }
 
 void LedMatrix::show_frame(){
-    #ifdef DEBUG
+    #ifdef LEDMATRIX_DEBUG
     Serial.println(F("Displaing frame"));
     #endif
     for (byte row = 0; row < MATRIX_SIZE; row++) {
@@ -116,6 +116,9 @@ bool LedMatrix::next(){
         }
     }
     if(!this->next_frame()){
+        #ifdef DEBUG
+        Serial.println(F("Error loading next frame"));
+        #endif
         return false;
     }
     this->show_frame();

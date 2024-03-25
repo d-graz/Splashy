@@ -2,7 +2,7 @@
 
 bool init_sd(){
     bool sd_status;
-    #ifdef DEBUG
+    #ifdef SD_DEBUG
     Serial.println(F("Initializing SD card"));
     #endif
     #ifdef SD_CSPIN
@@ -16,7 +16,7 @@ bool init_sd(){
         #endif
         return false;
     }
-    #ifdef DEBUG
+    #ifdef SD_DEBUG
         Serial.println(F("SD card initialized successfully"));
     #endif
     return true;
@@ -25,7 +25,7 @@ bool init_sd(){
 
 File open_file(String file_path, char mode){
     File file;
-    #ifdef DEBUG
+    #ifdef SD_DEBUG
     Serial.print(F("Opening file: "));
     Serial.println(file_path);
     #endif
@@ -47,14 +47,14 @@ File open_file(String file_path, char mode){
         #endif
         return file;
     }
-    #ifdef DEBUG
+    #ifdef SD_DEBUG
     Serial.println(F("File opened successfully"));
     Serial.println(file_path);
     #endif
     return file;
 }
 
-//FIXME: handel limit case when the number is just the tight size
+//FIXME:[HIGH] handel limit case when the number is just the tight size
 bool read_line(File file, char* buffer, byte buffer_size){
     bool control;
     char c;
