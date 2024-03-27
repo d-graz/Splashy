@@ -1,16 +1,19 @@
-#ifndef __SERVOCONTROLLER__
-#define __SERVOCONTROLLER__
-
 #include <Arduino.h>
 #include <Servo.h>
 #include "../Config/Config.hpp"
 #include "../MySD/MySD.hpp"
 #include "../TaskManagement/TaskManagement.hpp"
 
-#define SERVO_COUNT 3
+#ifndef __SERVOCONTROLLER__
+#define __SERVOCONTROLLER__
+
+#ifdef DEBUG
+#define SERVO_DEBUG // Uncomment this line to enable fine grained debugging for the Servo controller operations.
+#endif
+
 #define SERVO_ANGULAR_VELOCITY 57.2957795 // in degrees per second
 #define MAX_EXECUTION_TIME 300 // in milliseconds
-#define ANIMATION_LINE_LENGTH 30
+#define ANIMATION_LINE_LENGTH 70
 
 #define LEFT_WING_HOME_POSITION 90
 #define RIGHT_WING_HOME_POSITION 90
@@ -23,18 +26,27 @@
 enum class ServoName {
     LEFT_WING,
     RIGHT_WING,
-    HEAD
+    HEAD,
+    SERVO_COUNT
 };
 
-const byte servo_home_positions[SERVO_COUNT] = {LEFT_WING_HOME_POSITION, RIGHT_WING_HOME_POSITION, HEAD_HOME_POSITION};
-const byte servo_pins[SERVO_COUNT] = {LEFT_WING_SERVO_PIN, RIGHT_WING_SERVO_PIN, HEAD_SERVO_PIN};
+struct ServoData {
+    const ServoName name;
+    Servo servo;
+    const byte pin;
+    const byte home_position;
+    byte target_position;
+    short int inter_animation_increment;
+};
 
 class ServoController : public Task {
     private:
-        Servo servos[SERVO_COUNT];
-        byte final_target_positions[SERVO_COUNT];
-        byte computed_increment[SERVO_COUNT];
-        byte animation_steps;
+        ServoData servos[static_cast<byte>(ServoName::SERVO_COUNT)] = {
+            {ServoName::LEFT_WING, Servo(), LEFT_WING_SERVO_PIN, LEFT_WING_HOME_POSITION, 255, 255},
+            {ServoName::RIGHT_WING, Servo(), RIGHT_WING_SERVO_PIN, RIGHT_WING_HOME_POSITION, 255, 255},
+            {ServoName::HEAD, Servo(), HEAD_SERVO_PIN, HEAD_HOME_POSITION, 255, 255}
+        };
+        byte intra_animation_steps;
         unsigned int millisecods_to_next_frame;
         byte frame_count;
         byte current_frame;
@@ -49,7 +61,6 @@ class ServoController : public Task {
         void execute_animation_step();
     public:
         ServoController();
-        bool check_servos();
         bool load_animation(String filename, byte frame_count);
         void home(bool first_run);
         short unsigned int set_position(ServoName servo, byte position);

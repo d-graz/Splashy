@@ -1,7 +1,7 @@
 /**
  * @file MySD.hpp
  * @brief MySD library for simplified SD card operations.
- * @version 1.2
+ * @version 1.2.1
  * 
  * This library provides a simplified interface for working with SD cards on Arduino.
  * It wraps the functionality of the Arduino SD library.

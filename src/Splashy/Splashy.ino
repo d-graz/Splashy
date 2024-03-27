@@ -22,13 +22,13 @@
 // GLOBAL VARIABLES
 
 // led matrix object
-LedMatrix led_matrix = LedMatrix();
+LedMatrix *led_matrix;
 
 // scheduler
-Scheduler scheduler = Scheduler();
+Scheduler *scheduler;
 
 // sevo controller
-ServoController servo_controller = ServoController();
+ServoController *servo_controller;
 
 // FUNCTIONS
 #ifdef DEBUG
@@ -36,7 +36,7 @@ void handel_error(bool r, String e){
   if(!r){
     Serial.print(F("Error: "));
     Serial.println(e);
-    led_matrix.show_error();
+    led_matrix->show_error();
     while (true){
       delay(600000);
     }
@@ -45,7 +45,7 @@ void handel_error(bool r, String e){
 #else
 void handel_error(bool r){
   if(!r){
-    led_matrix.show_error();
+    led_matrix->show_error();
     while (true){
       delay(600000);
     }
@@ -62,6 +62,15 @@ void setup() {
   Serial.println(F("Init setup"));
   #endif
 
+  //init the scheduler
+  scheduler = new Scheduler();
+
+  //init the led matrix
+  led_matrix = new LedMatrix();
+
+  //init the servo controller
+  servo_controller = new ServoController();
+
   //init the sd card
   #ifdef DEBUG
   Serial.println(F("Initializing SD card"));
@@ -76,36 +85,26 @@ void setup() {
   #ifdef DEBUG
   Serial.println(F("Adding LedMatrix to scheduler and loading boot animation"));
   #endif
-  scheduler.add_task(&led_matrix);
+  scheduler->add_task(led_matrix);
   #ifdef DEBUG
-  handel_error(led_matrix.load_animation("boot.txt", 0), "Failed to load boot.txt");
+  handel_error(led_matrix->load_animation("an/boot.txt", 0), "Failed to load an/boot.txt");
   #else
-  handel_error(led_matrix.load_animation("boot.txt", 0));
+  handel_error(led_matrix->load_animation("an/boot.txt", 0));
   #endif
 
-  scheduler.executeAll();
+  scheduler->executeAll();
 
   //add servo controller to scheduler
   #ifdef DEBUG
   Serial.println(F("Adding ServoController to scheduler"));
   #endif
-  scheduler.add_task(&servo_controller);
-
-  //check if the servos are attached
-  #ifdef DEBUG
-  Serial.println(F("Checking if the servos are attached"));
-  #endif
-  #ifdef DEBUG
-  handel_error(servo_controller.check_servos(), "Servos are not attached");
-  #else
-  handel_error(servo_controller.check_servos());
-  #endif
+  scheduler->add_task(servo_controller);
 
   //homing the servo
   #ifdef DEBUG
   Serial.println(F("Homing the servo"));
   #endif
-  servo_controller.home(true);
+  servo_controller->home(true);
 
   #ifdef DEBUG
   Serial.println(F("Setup finished"));
@@ -119,9 +118,9 @@ void loop() {
   Serial.println(F("Loading servo moto animation"));
   #endif
   #ifdef DEBUG
-  handel_error(servo_controller.load_animation("prova_motori.txt", 0), "Failed to load prova_motori.txt");
+  handel_error(servo_controller->load_animation("mtr_tst.txt", 0), "Failed to load mtr_tst.txt");
   #else
-  handel_error(servo_controller.load_animation("prova_motori.txt", 0));
+  handel_error(servo_controller->load_animation("mtr_tst.txt", 0));
   #endif
   
   while(true){
@@ -129,9 +128,10 @@ void loop() {
     Serial.println(F("Executing scheduler"));
     #endif
     #ifdef DEBUG
-    handel_error(scheduler.executeAll(), "Failed to execute scheduler");
+    handel_error(scheduler->executeAll(), "Failed to execute scheduler");
+    delay(1000);
     #else
-    handel_error(scheduler.executeAll());
+    handel_error(scheduler->executeAll());
     #endif
   }
 }

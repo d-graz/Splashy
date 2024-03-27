@@ -24,34 +24,34 @@
 #define ANIMATION_LINE_LENGTH 11 ///< The length of each line in the animation file.
 
 /**
- * @enum Animation
+ * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
  *
  * Currently, only the Boot animation is defined.
  */
-enum Animation{
+enum LedMatrixAnimation{
     Boot, ///< Boot animation
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
 /**
- * @struct AnimationAttributes
+ * @struct LedMatrixAnimationAttributes
  * @brief Structure to hold attributes for each animation.
  *
  * This structure is used to store the file path and frame count for each animation.
  */
-struct AnimationAttributes {
+struct LedMatrixAnimationAttributes {
     String file_path; ///< The file path where the animation data is stored.
     byte frame_count; ///< The number of frames in the animation.
 };
 
 /**
- * @var const AnimationAttributes led_matrix_animations[AnimationCount]
+ * @var const LedMatrixAnimationAttributes led_matrix_animations[AnimationCount]
  * @brief Array to hold the attributes for each animation.
  *
  * This array is indexed by the Animation enum. Each element in the array is an AnimationAttributes struct that holds the attributes for the corresponding animation.
  */
-const AnimationAttributes led_matrix_animations[AnimationCount] = {
+const LedMatrixAnimationAttributes led_matrix_animations[AnimationCount] = {
     {"boot.txt", 0} ///< Attributes for the Boot animation.
 };
 

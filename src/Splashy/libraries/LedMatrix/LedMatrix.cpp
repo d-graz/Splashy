@@ -1,7 +1,7 @@
 /**
  * \file LedMatrix.cpp
  * \brief Source code file for the LedMatrix class.
- * \version 2.0
+ * \version 2.1
  */
 
 #include "LedMatrix.hpp"
@@ -27,6 +27,7 @@ bool LedMatrix::load_animation(String file_path, byte frame_count){
     this->file = open_file(file_path, 'r');
     if(!this->file){
         #ifdef DEBUG
+        Serial.println(F("Generated error in LedMatrix::load_animation()"));
         Serial.print(F("Error opening file : "));
         Serial.println(file_path);
         #endif
@@ -49,6 +50,7 @@ bool LedMatrix::next_frame(){
         control = this->file.read(string, ANIMATION_LINE_LENGTH);
         if(!control){
             #ifdef DEBUG
+            Serial.println(F("Generated error in LedMatrix::next_frame()"));
             Serial.println(F("Bad formatting for file"));
             #endif
             return false;
@@ -68,6 +70,7 @@ bool LedMatrix::next_frame(){
     control = read_line(this->file, string, ANIMATION_LINE_LENGTH);
     if (!control){
         #ifdef DEBUG
+        Serial.println(F("Generated error in LedMatrix::next_frame()"));
         Serial.println(F("Bad formatting file"));
         #endif
         return false;
@@ -117,7 +120,7 @@ bool LedMatrix::next(){
     }
     if(!this->next_frame()){
         #ifdef DEBUG
-        Serial.println(F("Error loading next frame"));
+        Serial.println(F("Error loading next frame of LedMatrix"));
         #endif
         return false;
     }

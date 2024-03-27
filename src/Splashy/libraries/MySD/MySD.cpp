@@ -61,6 +61,9 @@ bool read_line(File file, char* buffer, byte buffer_size){
     byte i = 0;
     for(i=0; i<buffer_size; i++){
         control = file.read(&c, 1);
+        #ifdef SD_DEBUG
+        Serial.print(c);
+        #endif
         if(!control){
             #ifdef DEBUG
             Serial.println(F("End of file"));
