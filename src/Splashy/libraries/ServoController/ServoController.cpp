@@ -20,7 +20,6 @@ ServoController::ServoController() {
     this->file = File();
     this->frame_count = 0;
     this->current_frame = 0;
-    this->intra_animation_steps = 0;
 }
 
 bool ServoController::load_animation(String filename, byte frame_count) {
@@ -132,89 +131,46 @@ bool ServoController::next_frame() {
         #endif
         return false;
     }
-    this->millisecods_to_next_frame = strtol(string, NULL, 10);
+    short unsigned int millisecods_to_next_frame = strtol(string, NULL, 10);
     #ifdef SERVO_DEBUG
     Serial.print(F("Sleep time loaded from animation: "));
-    Serial.println(this->millisecods_to_next_frame);
+    Serial.println(millisecods_to_next_frame);
     Serial.println(F("Setting up animation steps"));
     #endif
-    this->compute_animation_steps();
+    this->compute_minimum_delay(millisecods_to_next_frame);
     #ifdef SERVO_DEBUG
     Serial.println(F("Animation steps computed"));
     #endif
     return true;
 }
 
-void ServoController::compute_animation_steps(){
-    short unsigned int max_delay = 0;
-    byte steps_count = 0;
+void ServoController::compute_minimum_delay(short unsigned int lower_bound){
+    short unsigned int max_delay = lower_bound;
     for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
         byte position = this->servos[i].servo.read();
-        if (position == this->servos[i].target_position){
-            this->servos[i].inter_animation_increment = 0;
-        } else {
+        if (!(position == this->servos[i].target_position)){
             short unsigned int delay = this->get_required_delay(position, this->servos[i].target_position);
             if (delay > max_delay){
                 max_delay = delay;
             }
-            this->servos[i].inter_animation_increment = static_cast<short int>(this->servos[i].target_position) - static_cast<short int>(position);
         }
     }
-    steps_count = floor((float) max_delay / (float) MAX_EXECUTION_TIME);
-    if (steps_count != 0){
-        for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
-            if (this->servos[i].inter_animation_increment != 0){
-                this->servos[i].inter_animation_increment = floor((float) this->servos[i].inter_animation_increment / steps_count);
-            }
-        }
-    }
-    this->intra_animation_steps = steps_count + 1;
-    #ifdef SERVO_DEBUG
-    Serial.print(F("Intra animation steps: "));
-    Serial.println(this->intra_animation_steps);
-    for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
-        Serial.print(F("Servo "));
-        Serial.print(i);
-        Serial.print(F(" increment: "));
-        Serial.println(this->servos[i].inter_animation_increment);
-    }
-    #endif
+    this->sleep_time_millis = max_delay;
 }
 
-//FIXME: [HIGH] when calling home(false) there is a bug
 void ServoController::home(bool first_run){
     if (first_run){
         for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
             delay(this->set_position(static_cast<ServoName>(i), this->servos[i].home_position));
         }
     } else {
-        for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
+        for(byte i = 0; i < (static_cast<byte>(ServoName::SERVO_COUNT) - 1); i++){
             this->servos[i].target_position = this->servos[i].home_position;
-            this->compute_animation_steps();
-            this->status = TaskStatus::READY;
         }
+        this->compute_minimum_delay(0);
+        this->execute_animation_step();
+        delay(this->sleep_time_millis);
     }
-}
-
-void ServoController::execute_animation_step(){
-    for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
-        byte position = this->servos[i].servo.read();
-        if(this->intra_animation_steps == 1){
-            if(this->servos[i].target_position != position){
-                this->set_position(static_cast<ServoName>(i), this->servos[i].target_position);
-            } 
-        } else {
-            short int final_position = this->servos[i].inter_animation_increment + static_cast<short int>(position);
-            if(final_position > 180){
-                this->set_position(static_cast<ServoName>(i), 180);
-            } else if(final_position < 0){
-                this->set_position(static_cast<ServoName>(i), 0);
-            } else {
-                this->set_position(static_cast<ServoName>(i), static_cast<byte>(final_position));
-            }
-        }
-    }
-    this->intra_animation_steps--;
 }
 
 bool ServoController::next(){
@@ -239,17 +195,12 @@ bool ServoController::next(){
         Serial.println(F("Skipping check on frame count since it's runnig in loop mode"));
     }
     #endif
-    if (this->intra_animation_steps == 0){
-        #ifdef SERVO_DEBUG
-        Serial.println(F("Loading next frame"));
+    if (!this->next_frame()){
+        #ifdef DEBUG
+        Serial.println(F("Generated error in ServoController::next()"));
+        Serial.println(F("Error loading next frame"));
         #endif
-        if (!this->next_frame()){
-            #ifdef DEBUG
-            Serial.println(F("Generated error in ServoController::next()"));
-            Serial.println(F("Error loading next frame"));
-            #endif
-            return false;
-        }
+        return false;
     }
     #ifdef SERVO_DEBUG
     Serial.println(F("Executing animation step"));
@@ -257,16 +208,18 @@ bool ServoController::next(){
     this->execute_animation_step();
     #ifdef SERVO_DEBUG
     Serial.println(F("Successfully executed animation step"));
-    #endif
-    if(this->intra_animation_steps == 0){
-        this->sleep_time_millis = this->millisecods_to_next_frame;
-    } else{
-        this->sleep_time_millis = 0;
-    }
-    #ifdef SERVO_DEBUG
     Serial.print(F("Sleep time: "));
     Serial.println(this->sleep_time_millis);
     #endif
     this->update_next_execution_millis();
     return true;
+}
+
+void ServoController::execute_animation_step(){
+    for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
+        byte current_position = this->servos[i].servo.read();
+        if (current_position != this->servos[i].target_position){
+            this->set_position(static_cast<ServoName>(i), this->servos[i].target_position);
+        }
+    }
 }
