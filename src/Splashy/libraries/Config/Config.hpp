@@ -3,6 +3,10 @@
  * @brief Pinout configuration for the Splashy project.
  */
 
+#ifndef __CONFIG__
+#define __CONFIG__
+
+// configuration for the SD card
 #define SD_CSPIN 7
 
 // configuration for the LED matrix
@@ -14,3 +18,5 @@
 #define LEFT_WING_SERVO_PIN 22
 #define RIGHT_WING_SERVO_PIN 23
 #define HEAD_SERVO_PIN 24
+
+#endif

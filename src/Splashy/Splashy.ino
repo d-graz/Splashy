@@ -4,6 +4,7 @@
 // LIBRARIES
 
 //libraries in release mode
+#include "libraries/Config/Global.hpp"
 
 #define DEBUG
 //libraries in debug mode
@@ -18,17 +19,6 @@
 
 // DEFINE
 #define BAUD_RATE 9600
-
-// GLOBAL VARIABLES
-
-// led matrix object
-LedMatrix *led_matrix;
-
-// scheduler
-Scheduler *scheduler;
-
-// sevo controller
-ServoController *servo_controller;
 
 // FUNCTIONS
 #ifdef DEBUG
@@ -92,13 +82,13 @@ void setup() {
   handel_error(led_matrix->load_animation("an/boot.txt", 0));
   #endif
 
-  scheduler->executeAll();
-
   //add servo controller to scheduler
   #ifdef DEBUG
   Serial.println(F("Adding ServoController to scheduler"));
   #endif
   scheduler->add_task(servo_controller);
+
+  scheduler->executeAll();
 
   //homing the servo
   #ifdef DEBUG
@@ -118,18 +108,18 @@ void loop() {
   Serial.println(F("Loading servo moto animation"));
   #endif
   #ifdef DEBUG
-  handel_error(servo_controller->load_animation("mtr_tst.txt", 0), "Failed to load mtr_tst.txt");
+  handel_error(servo_controller->load_animation("mtr/tst.txt", 0), "Failed to load mtr/tst.txt");
   #else
-  handel_error(servo_controller->load_animation("mtr_tst.txt", 0));
+  handel_error(servo_controller->load_animation("mtr/tst.txt", 0));
   #endif
   
   while(true){
     #ifdef DEBUG
-    Serial.println(F("Executing scheduler"));
+    Serial.println(F("Scheduler loop"));
     #endif
     #ifdef DEBUG
     handel_error(scheduler->executeAll(), "Failed to execute scheduler");
-    delay(1000);
+    delay(2000);
     #else
     handel_error(scheduler->executeAll());
     #endif

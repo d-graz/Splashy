@@ -3,12 +3,18 @@
  * @brief Task management library for Arduino.
  * @version 1.0
  */
-//TODO: [LOW] Explore the usage of static task list instead of dynamic allocation
 
 #ifndef __TASKMANAGEMENT__
 #define __TASKMANAGEMENT__
 
 #include <Arduino.h>
+
+#ifdef DEBUG
+//#define TASK_DEBUG ///< Enable fine grained debugging for the Task management operations.
+#define SCHEDULER_DEBUG ///< Enable fine grained debugging for the Scheduler operations.
+#endif
+
+#define MAX_CONCURRENT_TASKS 5 ///< Maximum number of concurrent tasks.
 
 /**
  * @enum TaskStatus
@@ -21,16 +27,22 @@ enum TaskStatus {
     HIBERNATED   /**< Task is temporarily paused and will not be executed. */
 };
 
-class Task;
-
-/**
- * @struct task_list
- * @brief Structure for a node in the task list.
- */
-typedef struct task_list {
-    Task* task;          /**< Pointer to the task. */
-    task_list* next;     /**< Pointer to the next node in the list. */
-} task_list_t;
+#ifdef DEBUG
+const char* task_status_to_string(TaskStatus status){
+    switch (status){
+        case TaskStatus::READY:
+            return "READY";
+        case TaskStatus::WAITING:
+            return "WAITING";
+        case TaskStatus::DEAD:
+            return "DEAD";
+        case TaskStatus::HIBERNATED:
+            return "HIBERNATED";
+        default:
+            return "UNKNOWN";
+    }
+}
+#endif
 
 /**
  * @class Task
@@ -89,9 +101,9 @@ class Task {
  */
 class Scheduler {
     private:
-        task_list_t* task_list;     /**< Pointer to the first task in the list. */
-        task_list_t* current_task;  /**< Pointer to the current task. */
-        bool need_clean;            /**< Flag indicating whether the task list needs to be cleaned. */
+        Task* task_list[MAX_CONCURRENT_TASKS];     /**< Array of pointers to Task objects. */
+        byte task_count;                           /**< Number of task present in the scheduler */
+        bool need_clean;                           /**< Flag indicating whether the task list needs to be cleaned. */
 
         /**
          * @brief Cleans the task list by removing dead tasks.
@@ -103,7 +115,7 @@ class Scheduler {
          *
          * @param task Pointer to the task to delete.
          */
-        void delete_task(task_list_t* task);
+        void delete_task(Task* task);
 
     public:
         /**
@@ -115,17 +127,19 @@ class Scheduler {
          * @brief Adds a task to the task list.
          *
          * @param task Pointer to the task to add.
+         * 
+         * @return true if the task was added successfully, false otherwise.
          */
-        void add_task(Task* task);
+        bool add_task(Task* task);
 
-        /**
-         * @brief Executes one task.
-         *
-         * This method executes the next task in the list that is ready.
-         *
-         * @return true if the task was executed successfully, false otherwise.
-         */
-        bool executeOne();
+        ///**
+        // * @brief Executes one task.
+        // *
+        // * This method executes the next task in the list that is ready.
+        // *
+        // * @return true if the task was executed successfully, false otherwise.
+        // */
+        //bool executeOne();
 
         /**
          * @brief Executes all tasks.
@@ -135,6 +149,16 @@ class Scheduler {
          * @return true if all tasks were executed successfully, false if any task failed.
          */
         bool executeAll();
+
+        /**
+         * @brief Executes all tasks a specified number of times.
+         *
+         * This method executes all tasks in the list that are ready a specified number of times.
+         *
+         * @param loop_count The number of times to execute all tasks.
+         * @return true if all tasks were executed successfully, false if any task failed.
+         */
+        bool executeAll(byte loop_count);
 
         /**
          * @brief Kills all tasks.
@@ -149,16 +173,6 @@ class Scheduler {
          * This method immediately cleans the task list by removing all dead tasks.
          */
         void forceClean();
-
-        /**
-         * @brief Asserts the size of the task list.
-         *
-         * This method checks if the size of the task list is equal to the specified size.
-         *
-         * @param list_size The expected size of the task list.
-         * @return true if the size of the task list is equal to list_size, false otherwise.
-         */
-        bool assertSize(byte list_size);
 };
 
 #endif

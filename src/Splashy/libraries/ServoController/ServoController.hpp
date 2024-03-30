@@ -3,6 +3,7 @@
  * @brief Header file for the ServoController class.
  * @version 2.4
  */
+//TODO: [LOW] Add a struct to include path of the animation file for the servo controller class
 
 #include <Arduino.h>
 #include <Servo.h>
@@ -17,7 +18,7 @@
 //#define SERVO_DEBUG ///< Enable fine grained debugging for the Servo controller operations.
 #endif
 
-#define SERVO_ANGULAR_VELOCITY 57.2957795 ///< Servo angular velocity in degrees per second.
+#define SERVO_ANGULAR_VELOCITY 15.13 ///< Servo angular velocity in degrees per second.
 #define MAX_EXECUTION_TIME 300 ///< Maximum execution time in milliseconds.
 #define ANIMATION_LINE_LENGTH 70 ///< Length of animation line.
 
@@ -58,7 +59,11 @@ struct ServoData {
  */
 class ServoController : public Task {
     private:
-        ServoData servos[static_cast<byte>(ServoName::SERVO_COUNT)]; ///< Array of ServoData objects.
+        ServoData servos[static_cast<byte>(ServoName::SERVO_COUNT)] = {
+            {ServoName::LEFT_WING, Servo(), LEFT_WING_SERVO_PIN, LEFT_WING_HOME_POSITION, LEFT_WING_HOME_POSITION},
+            {ServoName::RIGHT_WING, Servo(), RIGHT_WING_SERVO_PIN, RIGHT_WING_HOME_POSITION, RIGHT_WING_HOME_POSITION},
+            {ServoName::HEAD, Servo(), HEAD_SERVO_PIN, HEAD_HOME_POSITION, HEAD_HOME_POSITION}
+        }; ///< Array of servos.
         byte frame_count; ///< Count of frames.
         byte current_frame; ///< Current frame.
         File file; ///< File object.

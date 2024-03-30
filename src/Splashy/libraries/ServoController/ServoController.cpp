@@ -161,7 +161,8 @@ void ServoController::compute_minimum_delay(short unsigned int lower_bound){
 void ServoController::home(bool first_run){
     if (first_run){
         for(byte i = 0; i < static_cast<byte>(ServoName::SERVO_COUNT); i++){
-            delay(this->set_position(static_cast<ServoName>(i), this->servos[i].home_position));
+            this->servos[i].servo.write(this->servos[i].home_position);
+            delay(1000);
         }
     } else {
         for(byte i = 0; i < (static_cast<byte>(ServoName::SERVO_COUNT) - 1); i++){
