@@ -15,8 +15,9 @@ while(true){
 	else{
 		if(borracciaPresente == false) giàRiempita = false;  //quando viene tolta la borraccia possiamo resettare giàRiempita e abilitiamo un nuovo riempimento
 		
-		if((STATO == ATTESA) && (timerSolitudine > istanteSolitudine) && personePresenti == true) STATO = CERCA_ATTENZIONI;
-		else if(((STATO == ATTESA) || (STATO == CERCA_ATTENZIONI)) && carezze() == true) STATO = PETTING;
+		if(((STATO == ATTESA) || (STATO == CERCA_ATTENZIONI)) && carezze() == true) STATO = PETTING;
+		else if((STATO == ATTESA) && (timerSolitudine > istanteSolitudine) && carezze() == false && personePresenti == true) STATO = CERCA_ATTENZIONI;
+		
 	}
 	
 	//alla fine di ogni stato si va in attesa come vedrai nelle prossime funzioni erogazione(), richiamaAttenzione(), reagisciCarezze()...
