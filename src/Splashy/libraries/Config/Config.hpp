@@ -19,4 +19,7 @@
 #define RIGHT_WING_SERVO_PIN 23
 #define HEAD_SERVO_PIN 24
 
+// proximity sensor pins
+#define PROXIMITY_SENSOR_PIN 25
+
 #endif

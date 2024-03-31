@@ -24,6 +24,18 @@ void Task::update_next_execution_millis(){
     this->next_execution_millis = millis() + this->sleep_time_millis;
 }
 
+void Task::hibernate(){
+    this->status = TaskStatus::HIBERNATED;
+}
+
+bool Task::activate(){
+    if(this->status == TaskStatus::HIBERNATED){
+        this->status = TaskStatus::WAITING;
+        return true;
+    }
+    return false;
+}
+
 Scheduler::Scheduler(){
     this->task_count = 0;
     for (byte i = 0; i < MAX_CONCURRENT_TASKS; i++){

@@ -1,7 +1,7 @@
 /**
  * @file TaskManagement.hpp
  * @brief Task management library for Arduino.
- * @version 1.0
+ * @version 2.5
  */
 
 #ifndef __TASKMANAGEMENT__
@@ -90,6 +90,22 @@ class Task {
          * This sets the status of the task to DEAD.
          */
         void kill();
+
+        /**
+         * @brief Hibernates the task.
+         *
+         * This sets the status of the task to HIBERNATED.
+         */
+        void hibernate();
+
+        /**
+         * @brief Activates the task.
+         *
+         * This sets the status of the task to READY.
+         *
+         * @return true if the task was activated successfully, false otherwise.
+         */
+        bool activate();
 };
 
 /**
