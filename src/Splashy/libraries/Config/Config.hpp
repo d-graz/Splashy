@@ -22,4 +22,8 @@
 // proximity sensor pins
 #define PROXIMITY_SENSOR_PIN 25
 
+// ultrasonic sensor pins
+#define ULTRASONIC_SENSOR_TRIGGER_PIN 26
+#define ULTRASONIC_SENSOR_ECHO_PIN 27
+
 #endif

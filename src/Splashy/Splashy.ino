@@ -2,7 +2,7 @@
 //TODO: add state controller class
 
 // LIBRARIES
-
+#include<NewPing.h>
 //libraries in release mode
 #include "libraries/Config/Global.hpp"
 
