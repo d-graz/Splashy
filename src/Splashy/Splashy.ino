@@ -1,10 +1,7 @@
-//TODOS
-//TODO: add state controller class
-
 // LIBRARIES
-#include<NewPing.h>
 //libraries in release mode
 #include "libraries/Config/Global.hpp"
+#include "libraries/Core/src/Core.hpp"
 
 #define DEBUG
 //libraries in debug mode
