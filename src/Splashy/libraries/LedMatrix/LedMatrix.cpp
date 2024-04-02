@@ -20,11 +20,11 @@ LedMatrix::LedMatrix(): Task(), lc(LED_MATRIX_DATA_PIN, LED_MATRIX_CLK_PIN, LED_
     this->current_frame = 0;
 }
 
-bool LedMatrix::load_animation(String file_path, byte frame_count){
+bool LedMatrix::load_animation(LedMatrixAnimation animation){
     this->file.close();
-    this->frame_count = frame_count;
+    this->frame_count = static_cast<byte>(_led_matrix_animations[animation].frame_count);
     this->current_frame = 0;
-    this->file = open_file(file_path, 'r');
+    this->file = open_file(_led_matrix_animations[animation].file_path, 'r');
     if(!this->file){
         #ifdef DEBUG
         Serial.println(F("Generated error in LedMatrix::load_animation()"));

@@ -1,7 +1,7 @@
 /**
  * @file LedMatrix.hpp
  * @brief File containing the definition of the LedMatrix class, which is used for controlling a LED matrix.
- * @version 2.1
+ * @version 2.2
  */
 
 
@@ -22,7 +22,7 @@
 #define LED_MATRIX_DEVICES_COUNT 2 ///< The number of devices in the LED matrix.
 #define DEFAULT_BRIGHTNESS 8 ///< The default brightness of the LED matrix.
 #define ANIMATION_LINE_LENGTH 11 ///< The length of each line in the animation file.
-
+//TODO: [EXTERN] create a fill.txt animation for the heart that should be displayed when the splashy is refilling
 /**
  * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
@@ -30,7 +30,8 @@
  * Currently, only the Boot animation is defined.
  */
 enum LedMatrixAnimation{
-    Boot, ///< Boot animation
+    Boot, ///< Boot animation.
+    Refill, ///< Filling animation.
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
@@ -51,8 +52,9 @@ struct LedMatrixAnimationAttributes {
  *
  * This array is indexed by the Animation enum. Each element in the array is an AnimationAttributes struct that holds the attributes for the corresponding animation.
  */
-const LedMatrixAnimationAttributes led_matrix_animations[AnimationCount] = {
-    {"boot.txt", 0} ///< Attributes for the Boot animation.
+const LedMatrixAnimationAttributes _led_matrix_animations[AnimationCount] = {
+    {"an/boot.txt", 0},
+    {"an/fill.txt", 0}
 };
 
 /**
@@ -97,15 +99,14 @@ class LedMatrix : public Task {
         LedMatrix();
 
         /**
-         * @brief Loads an animation from a file.
+         * @brief Loads an animation into the LED matrix.
          *
-         * This method opens the specified file and reads the animation data into memory.
+         * This method takes an animation object and loads it into the LED matrix for display.
          *
-         * @param file_path The path to the file containing the animation data.
-         * @param frame_count The number of frames in the animation.
+         * @param animation The LedMatrixAnimation object containing the animation data.
          * @return true if the animation was loaded successfully, false otherwise.
          */
-        bool load_animation(String file_path, byte frame_count);
+        bool load_animation(LedMatrixAnimation animation);
 
         /**
          * @brief Displays an error animation.
