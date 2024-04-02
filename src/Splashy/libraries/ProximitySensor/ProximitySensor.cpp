@@ -1,6 +1,6 @@
 #include "ProximitySensor.hpp"
 
-ProximitySensor::ProximitySensor(){
+ProximitySensor::ProximitySensor(const char* name): Task(name){
     this->object_detected = false;
     pinMode(PROXIMITY_SENSOR_PIN, INPUT);
     this->status = TaskStatus::HIBERNATED;

@@ -1,7 +1,7 @@
 /**
  * @file ProximitySensor.hpp
  * @brief Header file for the ProximitySensor class.
- * @version 1.0
+ * @version 1.1
  */
 
 #ifndef __PROXIMITYSENSOR__
@@ -29,9 +29,13 @@ class ProximitySensor : public Task {
         bool object_detected; ///< Flag to indicate if an object has been detected.
     public:
         /**
-         * @brief Constructor for the ProximitySensor class.
+         * @brief Constructor for ProximitySensor class.
+         *
+         * Initializes a new instance of the ProximitySensor class with a given name.
+         *
+         * @param name The name of the task. This is passed to the base Task class.
          */
-        ProximitySensor();
+        ProximitySensor(const char* name);
 
         /**
          * @brief Override the next method from the Task class.

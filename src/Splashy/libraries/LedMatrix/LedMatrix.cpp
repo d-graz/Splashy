@@ -6,7 +6,7 @@
 
 #include "LedMatrix.hpp"
 
-LedMatrix::LedMatrix(): Task(), lc(LED_MATRIX_DATA_PIN, LED_MATRIX_CLK_PIN, LED_MATRIX_CS_PIN, LED_MATRIX_DEVICES_COUNT){
+LedMatrix::LedMatrix(const char* name): Task(name), lc(LED_MATRIX_DATA_PIN, LED_MATRIX_CLK_PIN, LED_MATRIX_CS_PIN, LED_MATRIX_DEVICES_COUNT){
     #ifdef LEDMATRIX_DEBUG
     Serial.println(F("Init LedMatrix class"));
     #endif
@@ -29,7 +29,7 @@ bool LedMatrix::load_animation(LedMatrixAnimation animation){
         #ifdef DEBUG
         Serial.println(F("Generated error in LedMatrix::load_animation()"));
         Serial.print(F("Error opening file : "));
-        Serial.println(file_path);
+        Serial.println(_led_matrix_animations[animation].file_path);
         #endif
         return false;
     }

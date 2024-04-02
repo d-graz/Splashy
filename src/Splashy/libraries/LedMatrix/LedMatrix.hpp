@@ -1,7 +1,7 @@
 /**
  * @file LedMatrix.hpp
  * @brief File containing the definition of the LedMatrix class, which is used for controlling a LED matrix.
- * @version 2.2
+ * @version 2.3
  */
 
 
@@ -94,9 +94,11 @@ class LedMatrix : public Task {
         /**
          * @brief Constructor for LedMatrix class.
          *
-         * Initializes a new instance of the LedMatrix class. This includes initializing the LED control object and setting the initial state of the LED matrix.
+         * Initializes a new instance of the LedMatrix class. This includes initializing the LED control object, setting the initial state of the LED matrix, and setting the task name.
+         *
+         * @param name The name of the task. This is passed to the base Task class.
          */
-        LedMatrix();
+        LedMatrix(const char* name);
 
         /**
          * @brief Loads an animation into the LED matrix.

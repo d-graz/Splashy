@@ -1,9 +1,11 @@
 #include "TaskManagement.hpp"
 
-Task::Task(){
+Task::Task(const char* name){
     this->status = TaskStatus::HIBERNATED;
     this->next_execution_millis = 0;
     this->sleep_time_millis = 0;
+    strcpy(this->name, name);
+    this->name[TASK_NAME_LENGTH - 1] = '\0';
 }
 
 TaskStatus Task::get_status(){
@@ -34,6 +36,10 @@ bool Task::activate(){
         return true;
     }
     return false;
+}
+
+const char* Task::get_name(){
+    return this->name;
 }
 
 Scheduler::Scheduler(){
@@ -113,16 +119,6 @@ void Scheduler::killAll() {
     this->need_clean = true;
 }
 
-//FIXME: [HIGH] need to skip the task that are not ready + update in case clean istance
-//bool Scheduler::executeOne() {
-//    if(this->current_task == nullptr) {
-//        return true;
-//    }
-//    bool r = this->current_task->task->next();
-//    this->current_task = this->current_task->next;
-//    return r;
-//}
-
 bool Scheduler::executeAll() {
     bool control, empty_execution = true;
     for(byte i = 0; i < MAX_CONCURRENT_TASKS; i++){
@@ -185,4 +181,17 @@ bool Scheduler::executeAll(byte loop_count){
         }
     }
     return true;
+}
+
+void Scheduler::executeByName(String name, byte loop_count = 1){
+    for(byte i = 0; i < MAX_CONCURRENT_TASKS; i++){
+        if(this->task_list[i] != nullptr){
+            if(strcmp(this->task_list[i]->get_name(), name.c_str()) == 0){
+                for(byte j = 0; j < loop_count; j++){
+                    this->task_list[i]->next();
+                }
+                return;
+            }
+        }
+    }
 }

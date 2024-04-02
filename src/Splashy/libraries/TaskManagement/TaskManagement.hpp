@@ -1,7 +1,7 @@
 /**
  * @file TaskManagement.hpp
  * @brief Task management library for Arduino.
- * @version 2.5
+ * @version 2.7
  */
 
 #ifndef __TASKMANAGEMENT__
@@ -15,6 +15,8 @@
 #endif
 
 #define MAX_CONCURRENT_TASKS 5 ///< Maximum number of concurrent tasks.
+
+#define TASK_NAME_LENGTH 10 ///< Maximum length of a task name.
 
 /**
  * @enum TaskStatus
@@ -56,6 +58,7 @@ class Task {
         TaskStatus status;                   /**< Current status of the task. */
         unsigned int next_execution_millis;  /**< Time for the next execution of the task. */
         unsigned int sleep_time_millis;      /**< Next sleep time between executions of the task. */
+        char name[TASK_NAME_LENGTH];         /**< Name of the task. */
 
         /**
          * @brief Updates the time for the next execution of the task.
@@ -64,9 +67,13 @@ class Task {
 
     public:
         /**
-         * @brief Constructor.
+         * @brief Constructor for Task class.
+         *
+         * Initializes a new instance of the Task class with a given name.
+         *
+         * @param name The name of the task. This is stored internally and can be retrieved with the get_name() method.
          */
-        Task();
+        Task(const char* name);
 
         /**
          * @brief Executes the task.
@@ -106,6 +113,13 @@ class Task {
          * @return true if the task was activated successfully, false otherwise.
          */
         bool activate();
+
+        /**
+         * @brief Returns the name of the task.
+         *
+         * @return The name of the task.
+         */
+        const char* get_name();
 };
 
 /**
@@ -148,15 +162,6 @@ class Scheduler {
          */
         bool add_task(Task* task);
 
-        ///**
-        // * @brief Executes one task.
-        // *
-        // * This method executes the next task in the list that is ready.
-        // *
-        // * @return true if the task was executed successfully, false otherwise.
-        // */
-        //bool executeOne();
-
         /**
          * @brief Executes all tasks.
          *
@@ -189,6 +194,16 @@ class Scheduler {
          * This method immediately cleans the task list by removing all dead tasks.
          */
         void forceClean();
+
+        /**
+         * @brief Executes a task by its name.
+         *
+         * This method allows to execute a task by providing its name. The task will be executed a specified number of times.
+         *
+         * @param name The name of the task to be executed.
+         * @param loop_count The number of times the task should be executed. Default is 1.
+         */
+        void executeByName(String name, byte loop_count = 1);
 };
 
 #endif

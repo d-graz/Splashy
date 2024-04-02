@@ -1,6 +1,6 @@
 #include "Core.hpp"
 
-void handle_error(bool execution_status, String error_message = "generic expection during execution"){
+void handle_error(bool execution_status, String error_message){
     if(execution_status){
         return;
     }

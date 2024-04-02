@@ -1,10 +1,12 @@
-// LIBRARIES
-//libraries in release mode
+// ####################### LIBRARIES ###########################
+// release libraries
 #include "libraries/Config/Global.hpp"
-#include "libraries/Core/src/Core.hpp"
+#include "libraries/Config/Config.hpp"
+#include "libraries/Core/Core.hpp"
+#include "libraries/Core/Core.cpp"
 
 #define DEBUG
-//libraries in debug mode
+// debug libraries
 #include "libraries/LedMatrix/LedMatrix.hpp"
 #include "libraries/LedMatrix/LedMatrix.cpp"
 #include "libraries/MySD/MySD.hpp"
@@ -13,34 +15,27 @@
 #include "libraries/TaskManagement/TaskManagement.cpp"
 #include "libraries/ServoController/ServoController.hpp"
 #include "libraries/ServoController/ServoController.cpp"
+#include "libraries/UltrasonicSensor/UltrasonicSensor.hpp"
+#include "libraries/UltrasonicSensor/UltrasonicSensor.cpp"
+#include "libraries/ProximitySensor/ProximitySensor.hpp"
+#include "libraries/ProximitySensor/ProximitySensor.cpp"
+#include "libraries/FiniteStateMachine/FiniteStateMachine.hpp"
+#include "libraries/FiniteStateMachine/FiniteStateMachine.cpp"
 
-// DEFINE
+
+// ######################## DEFINE #############################
 #define BAUD_RATE 9600
 
-// FUNCTIONS
-#ifdef DEBUG
-void handel_error(bool r, String e){
-  if(!r){
-    Serial.print(F("Error: "));
-    Serial.println(e);
-    led_matrix->show_error();
-    while (true){
-      delay(600000);
-    }
-  }
-}
-#else
-void handel_error(bool r){
-  if(!r){
-    led_matrix->show_error();
-    while (true){
-      delay(600000);
-    }
-  }
-}
-#endif
 
-// setup
+// ##################### GLOBAL VARS ###########################
+// scheduler
+Scheduler *scheduler;
+
+// fsm
+FiniteStateMachine *fsm;
+
+
+// ##################### SETUP #################################
 void setup() {
   #ifdef DEBUG
   // start serial communication
@@ -52,73 +47,95 @@ void setup() {
   //init the scheduler
   scheduler = new Scheduler();
 
-  //init the led matrix
-  led_matrix = new LedMatrix();
+  //init the led matrix early to enable error handling
+  #ifdef DEBUG
+  Serial.println(F("Init LedMatrix"));
+  #endif
+  led_matrix = new LedMatrix("Led");
+  scheduler->add_task(led_matrix);
+
+  //init the sd card early to load boot animation
+  #ifdef DEBUG
+  Serial.println(F("Init SD card"));
+  #endif
+  handle_error(init_sd(), F("Failed to initialize SD card"));
+
+  //load the boot animation
+  #ifdef DEBUG
+  Serial.println(F("Loading boot animation"));
+  #endif
+  handle_error(led_matrix->load_animation(LedMatrixAnimation::Boot), F("Failed to load boot animation"));
+  scheduler->executeByName(F("Led"), 3);
 
   //init the servo controller
-  servo_controller = new ServoController();
-
-  //init the sd card
   #ifdef DEBUG
-  Serial.println(F("Initializing SD card"));
+  Serial.println(F("Init ServoController, adding to the scehduler and homing the servo"));
   #endif
-  #ifdef DEBUG
-  handel_error(init_sd(), "Failed to initialize SD card");
-  #else
-  handel_error(init_sd());
-  #endif
-
-  //add led matrix to scheduler
-  #ifdef DEBUG
-  Serial.println(F("Adding LedMatrix to scheduler and loading boot animation"));
-  #endif
-  scheduler->add_task(led_matrix);
-  #ifdef DEBUG
-  handel_error(led_matrix->load_animation("an/boot.txt", 0), "Failed to load an/boot.txt");
-  #else
-  handel_error(led_matrix->load_animation("an/boot.txt", 0));
-  #endif
-
-  //add servo controller to scheduler
-  #ifdef DEBUG
-  Serial.println(F("Adding ServoController to scheduler"));
-  #endif
-  scheduler->add_task(servo_controller);
-
-  scheduler->executeAll();
-
-  //homing the servo
-  #ifdef DEBUG
-  Serial.println(F("Homing the servo"));
-  #endif
+  servo_controller = new ServoController("Servo");
+  scheduler->executeByName(F("Led"));
   servo_controller->home(true);
+  scheduler->executeByName(F("Led"), 3);
+
+  //init the ultrasonic sensor
+  //TODO: [CRITICAL] remember to activate this task before enetering the loop
+  #ifdef DEBUG
+  Serial.println(F("Init UltrasonicSensor and adding to the scheduler"));
+  #endif
+  ultrasonic_sensor = new UltrasonicSensor("Usonic");
+  scheduler->executeByName(F("Led"));
+  scheduler->add_task(ultrasonic_sensor);
+  scheduler->executeByName(F("Led"), 3);
+
+  //init the proximity sensor
+  //TODO: [CRITICAL] remember to activate this task before enetering the loop
+  #ifdef DEBUG
+  Serial.println(F("Init ProximitySensor and adding to the scheduler"));
+  #endif
+  proximity_sensor = new ProximitySensor("Prox");
+  scheduler->executeByName(F("Led"));
+  scheduler->add_task(proximity_sensor);
+  scheduler->executeByName(F("Led"), 3);
+
+  //TODO: [CRITICAL] init pump sistem
+
+  //init the fsm
+  #ifdef DEBUG
+  Serial.println(F("Init FiniteStateMachine"));
+  #endif
+  fsm = new FiniteStateMachine();
+  scheduler->executeByName(F("Led"), 2);
+
+  // activating proximity sensor and ultrasonic sensor before entering the loop in IDLE status
+  #ifdef DEBUG
+  Serial.println(F("Activating proximity sensor and ultrasonic sensor before entering the loop in IDLE status"));
+  #endif
+  proximity_sensor->activate();
+  ultrasonic_sensor->activate();
+  scheduler->executeByName(F("Led"), 2);
+
+  //load the idle animation facial expression
+  //TODO: [CRITICAL, EXTERN] create an idle animation and maybe even a servo motor animation
 
   #ifdef DEBUG
-  Serial.println(F("Setup finished"));
+  Serial.println(F("Setup done"));
   #endif
+
+  
+
 }
 
-// loop
+
+// ######################## LOOP ###############################
 void loop() {
+  // execute the fsm
   #ifdef DEBUG
-  Serial.println(F("Loop cycle"));
-  Serial.println(F("Loading servo moto animation"));
+  Serial.println(F("Executing the FSM"));
   #endif
+  fsm->next();
+
+  // execute the scheduler
   #ifdef DEBUG
-  handel_error(servo_controller->load_animation("mtr/tst.txt", 0), "Failed to load mtr/tst.txt");
-  #else
-  handel_error(servo_controller->load_animation("mtr/tst.txt", 0));
+  Serial.println(F("Executing the scheduler"));
   #endif
-  
-  while(true){
-    #ifdef DEBUG
-    Serial.println(F("Scheduler loop"));
-    #endif
-    #ifdef DEBUG
-    handel_error(scheduler->executeAll(), "Failed to execute scheduler");
-    delay(2000);
-    #else
-    handel_error(scheduler->executeAll());
-    #endif
-  }
+  scheduler->executeAll();
 }

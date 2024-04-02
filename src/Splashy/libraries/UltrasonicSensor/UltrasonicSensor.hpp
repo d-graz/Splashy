@@ -42,10 +42,13 @@ class UltrasonicSensor : public Task {
 
     public:
         /**
-         * @brief Constructor for the UltrasonicSensor class.
-         * Initializes the sonar object and the filter array.
+         * @brief Constructor for UltrasonicSensor class.
+         *
+         * Initializes a new instance of the UltrasonicSensor class with a given name. This includes initializing the sonar object and the filter array.
+         *
+         * @param name The name of the task. This is passed to the base Task class.
          */
-        UltrasonicSensor();
+        UltrasonicSensor(const char* name);
 
         /**
          * @brief Override the next method from the Task class.

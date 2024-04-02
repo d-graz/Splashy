@@ -46,6 +46,18 @@ State idle(unsigned int state_entering_time) {
     return State::IDLE;
 }
 
+State attract(unsigned int state_entering_time){
+    return State::ATTRACT;
+}
+
+State filling(unsigned int state_entering_time){
+    return State::FILLING;
+}
+
+State petting(unsigned int state_entering_time){
+    return State::PETTING;
+}
+
 FiniteStateMachine::FiniteStateMachine() {
     this->current_state = State::IDLE;
     this->state_entering_time = millis();

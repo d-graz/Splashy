@@ -94,9 +94,13 @@ class ServoController : public Task {
         void execute_animation_step();
     public:
         /**
-         * @brief Constructor for the ServoController class.
+         * @brief Constructor for ServoController class.
+         *
+         * Initializes a new instance of the ServoController class with a given name.
+         *
+         * @param name The name of the task. This is passed to the base Task class.
          */
-        ServoController();
+        ServoController(const char* name);
 
         /**
          * @brief Load an animation from a file.

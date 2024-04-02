@@ -1,6 +1,6 @@
 #include "ServoController.hpp"
 
-ServoController::ServoController() {
+ServoController::ServoController(const char* name): Task(name){
     #ifdef SERVO_DEBUG
     Serial.println(F("Init ServoController class"));
     #endif
