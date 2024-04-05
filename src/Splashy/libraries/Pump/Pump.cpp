@@ -25,6 +25,8 @@ void Pump::get_user_water_quantity(){
 }
 
 void Pump::hibernate(){
+    digitalWrite(PUMP_PIN, LOW);
+    this->pump_active = false;
     #ifdef PUMP_DEBUG
     Serial.println(F("Hibernating pump"));
     #endif
@@ -52,11 +54,12 @@ void Pump::activate_pump(){
     Serial.println(F("Activating pump"));
     #endif
     this->water_dispensed = 0.0;
+    this->get_user_water_quantity(); 
     noInterrupts();
     _pulse_count = 0;
     interrupts();
-    digitalWrite(PUMP_PIN, HIGH);
     this->pump_active = true;
+    digitalWrite(PUMP_PIN, HIGH);
 }
 
 bool Pump::next(){

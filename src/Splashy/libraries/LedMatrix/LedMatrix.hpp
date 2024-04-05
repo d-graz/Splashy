@@ -23,7 +23,8 @@
 #define DEFAULT_BRIGHTNESS 8 ///< The default brightness of the LED matrix.
 #define ANIMATION_LINE_LENGTH 11 ///< The length of each line in the animation file.
 //TODO: [EXTERN] create a fill.txt animation for the heart that should be displayed when the splashy is refilling
-//TODO: [EXTERN] create an idle.txt animation
+//TODO: [EXTERN] create an idle.txt animation for idle state
+//TODO: [EXTERN] create an att.txt animation for attract state
 /**
  * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
@@ -34,6 +35,7 @@ enum LedMatrixAnimation{
     Boot, ///< Boot animation.
     Refill, ///< Filling animation.
     Idle, ///< Idle animation.
+    Attract, ///< Attract animation.
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
@@ -57,7 +59,8 @@ struct LedMatrixAnimationAttributes {
 const LedMatrixAnimationAttributes _led_matrix_animations[AnimationCount] = {
     {"an/boot.txt", 0},
     {"an/fill.txt", 0},
-    {"an/idle.txt", 0}
+    {"an/idle.txt", 0},
+    {"an/att.txt", 0}
 };
 
 /**

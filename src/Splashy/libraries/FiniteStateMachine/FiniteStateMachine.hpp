@@ -13,6 +13,7 @@ enum State {
     ATTRACT,
     FILLING,
     PETTING,
+    FILLED,
     StateCount
 };
 
@@ -22,6 +23,7 @@ State idle(unsigned int state_entering_time);
 State attract(unsigned int state_entering_time);
 State filling(unsigned int state_entering_time);
 State petting(unsigned int state_entering_time);
+State filled(unsigned int state_entering_time);
 
 
 class FiniteStateMachine {

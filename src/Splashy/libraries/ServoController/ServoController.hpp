@@ -3,7 +3,7 @@
  * @brief Header file for the ServoController class.
  * @version 2.5.1
  */
-//TODO: [EXTERN] create a hi.txt animation
+//TODO: [EXTERN] create a hi.txt animation for attract state
 #include <Arduino.h>
 #include <Servo.h>
 #include "../Config/Config.hpp"
