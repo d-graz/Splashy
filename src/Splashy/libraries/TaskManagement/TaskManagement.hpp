@@ -1,7 +1,7 @@
 /**
  * @file TaskManagement.hpp
  * @brief Task management library for Arduino.
- * @version 2.7.1
+ * @version 2.7.2
  */
 
 #ifndef __TASKMANAGEMENT__
@@ -202,8 +202,9 @@ class Scheduler {
          *
          * @param name The name of the task to be executed.
          * @param loop_count The number of times the task should be executed. Default is 1.
+         * @return true if the task was executed successfully, false otherwise.
          */
-        void executeByName(String name, byte loop_count = 1);
+        bool executeByName(String name, byte loop_count = 1);
 };
 
 #endif

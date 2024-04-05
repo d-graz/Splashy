@@ -55,7 +55,7 @@ void setup() {
   Serial.println(F("Init LedMatrix"));
   #endif
   led_matrix = new LedMatrix("Led");
-  scheduler->add_task(led_matrix);
+  handle_error(scheduler->add_task(led_matrix), F("Failed to add LedMatrix to the scheduler"));
 
   //init the sd card early to load boot animation
   #ifdef DEBUG
@@ -68,50 +68,51 @@ void setup() {
   Serial.println(F("Loading boot animation"));
   #endif
   handle_error(led_matrix->load_animation(LedMatrixAnimation::Boot), F("Failed to load boot animation"));
-  scheduler->executeByName(F("Led"), 3);
+  handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
 
   //init the servo controller
   #ifdef DEBUG
   Serial.println(F("Init ServoController, adding to the scehduler and homing the servo"));
   #endif
   servo_controller = new ServoController("Servo");
-  scheduler->executeByName(F("Led"));
+  handle_error(scheduler->add_task(servo_controller), F("Failed to add ServoController to the scheduler"));
+  handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
   servo_controller->home(true);
-  scheduler->executeByName(F("Led"), 3);
+  handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
 
   //init the ultrasonic sensor
   #ifdef DEBUG
   Serial.println(F("Init UltrasonicSensor and adding to the scheduler"));
   #endif
   ultrasonic_sensor = new UltrasonicSensor("Usonic");
-  scheduler->executeByName(F("Led"));
-  scheduler->add_task(ultrasonic_sensor);
-  scheduler->executeByName(F("Led"), 3);
+  handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
+  handle_error(scheduler->add_task(ultrasonic_sensor), F("Failed to add UltrasonicSensor to the scheduler"));
+  handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
 
   //init the proximity sensor
   #ifdef DEBUG
   Serial.println(F("Init ProximitySensor and adding to the scheduler"));
   #endif
   proximity_sensor = new ProximitySensor("Prox");
-  scheduler->executeByName(F("Led"));
-  scheduler->add_task(proximity_sensor);
-  scheduler->executeByName(F("Led"), 3);
+  handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
+  handle_error(scheduler->add_task(proximity_sensor), F("Failed to add ProximitySensor to the scheduler"));
+  handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
 
   //init the pump
   #ifdef DEBUG
   Serial.println(F("Init Pump and adding to the scheduler"));
   #endif
   pump = new Pump("Pump");
-  scheduler->executeByName(F("Led"));
-  scheduler->add_task(pump);
-  scheduler->executeByName(F("Led"));
+  handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
+  handle_error(scheduler->add_task(pump), F("Failed to add Pump to the scheduler"));
+  handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
 
   //init the fsm
   #ifdef DEBUG
   Serial.println(F("Init FiniteStateMachine"));
   #endif
   fsm = new FiniteStateMachine();
-  scheduler->executeByName(F("Led"), 2);
+  handle_error(scheduler->executeByName(F("Led"), 2), F("Failed to execute LedMatrix"));
 
   // activating proximity sensor and ultrasonic sensor before entering the loop in IDLE status
   #ifdef DEBUG
@@ -119,7 +120,7 @@ void setup() {
   #endif
   proximity_sensor->activate();
   ultrasonic_sensor->activate();
-  scheduler->executeByName(F("Led"), 2);
+  handle_error(scheduler->executeByName(F("Led"), 2), F("Failed to execute LedMatrix"));
 
   //load the idle animation facial expression
   led_matrix->load_animation(LedMatrixAnimation::Idle);
@@ -146,5 +147,5 @@ void loop() {
   #ifdef DEBUG
   Serial.println(F("Executing the scheduler"));
   #endif
-  scheduler->executeAll();
+  handle_error(scheduler->executeAll(), F("Failed to execute the scheduler"));
 }

@@ -1,7 +1,7 @@
 /**
  * @file ServoController.hpp
  * @brief Header file for the ServoController class.
- * @version 2.5
+ * @version 2.5.1
  */
 //TODO: [EXTERN] create a hi.txt animation
 #include <Arduino.h>
@@ -17,7 +17,7 @@
 //#define SERVO_DEBUG ///< Enable fine grained debugging for the Servo controller operations.
 #endif
 
-#define SERVO_ANGULAR_VELOCITY 15.13 ///< Servo angular velocity in degrees per second.
+#define SERVO_ANGULAR_VELOCITY 180 ///< Servo angular velocity in degrees per second.
 #define MAX_EXECUTION_TIME 300 ///< Maximum execution time in milliseconds.
 #define ANIMATION_LINE_LENGTH 70 ///< Length of animation line.
 

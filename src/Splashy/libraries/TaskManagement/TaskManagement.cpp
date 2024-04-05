@@ -183,15 +183,21 @@ bool Scheduler::executeAll(byte loop_count){
     return true;
 }
 
-void Scheduler::executeByName(String name, byte loop_count = 1){
+bool Scheduler::executeByName(String name, byte loop_count = 1){
     for(byte i = 0; i < MAX_CONCURRENT_TASKS; i++){
         if(this->task_list[i] != nullptr){
             if(strcmp(this->task_list[i]->get_name(), name.c_str()) == 0){
                 for(byte j = 0; j < loop_count; j++){
                     this->task_list[i]->next();
                 }
-                return;
+                return true;
             }
         }
     }
+    #ifdef SCHEDULER_DEBUG
+    Serial.print(F("Task with name "));
+    Serial.print(name);
+    Serial.println(F(" not found"));
+    #endif
+    return false;
 }
