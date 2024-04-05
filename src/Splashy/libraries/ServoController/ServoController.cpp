@@ -22,18 +22,18 @@ ServoController::ServoController(const char* name): Task(name){
     this->current_frame = 0;
 }
 
-bool ServoController::load_animation(String filename, byte frame_count) {
+bool ServoController::load_animation(ServoMotorAnimation animation) {
     this->file.close();
-    this->file = open_file(filename, 'r');
+    this->file = open_file(_servo_motor_animations[animation].file_path, 'r');
     if(!this->file){
         #ifdef DEBUG
         Serial.println(F("Generated error in ServoController::load_animation()"));
         Serial.print(F("Error opening file : "));
-        Serial.println(filename);
+        Serial.println(_servo_motor_animations[animation].file_path);
         #endif
         return false;
     }
-    this->frame_count = frame_count;
+    this->frame_count = _servo_motor_animations[animation].frame_count;
     this->current_frame = 0;
     this->status = TaskStatus::READY;
     return true;

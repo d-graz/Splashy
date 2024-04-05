@@ -1,6 +1,9 @@
 #include "ProximitySensor.hpp"
 
 ProximitySensor::ProximitySensor(const char* name): Task(name){
+    #ifdef PROXIMITY_SENSOR_DEBUG
+    Serial.println(F("Creating ProximitySensor object"));
+    #endif
     this->object_detected = false;
     pinMode(PROXIMITY_SENSOR_PIN, INPUT);
     this->status = TaskStatus::HIBERNATED;

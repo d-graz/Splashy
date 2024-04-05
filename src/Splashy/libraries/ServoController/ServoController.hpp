@@ -1,10 +1,9 @@
 /**
  * @file ServoController.hpp
  * @brief Header file for the ServoController class.
- * @version 2.4
+ * @version 2.5
  */
-//TODO: [LOW] Add a struct to include path of the animation file for the servo controller class
-
+//TODO: [EXTERN] create a hi.txt animation
 #include <Arduino.h>
 #include <Servo.h>
 #include "../Config/Config.hpp"
@@ -39,6 +38,41 @@ enum class ServoName {
     RIGHT_WING, ///< Right wing servo.
     HEAD, ///< Head servo.
     SERVO_COUNT ///< Total count of servos.
+};
+
+/**
+ * @enum ServoMotorAnimation
+ * @brief Enumerates the types of animations for the servo motor.
+ * 
+ * This enumeration defines the different types of animations that can be played on the servo motor.
+ * Add new animations to this enum as needed.
+ */
+enum ServoMotorAnimation {
+    Hi, ///< Represents a "Hi" animation.
+    ServoMotorAnimationCount ///< The total count of animations. Always keep this as the last element.
+};
+
+/**
+ * @struct ServoMotorAnimationAttributes
+ * @brief Holds the attributes for a servo motor animation.
+ * 
+ * This structure defines the attributes for an animation that can be played on the servo motor.
+ * Each animation has a file path where its data is stored and a frame count.
+ */
+struct ServoMotorAnimationAttributes {
+    String file_path; ///< The file path where the animation data is stored.
+    byte frame_count; ///< The number of frames in the animation.
+};
+
+/**
+ * @var _servo_motor_animations
+ * @brief An array of ServoMotorAnimationAttributes.
+ * 
+ * This array holds the attributes for each animation defined in the ServoMotorAnimation enum.
+ * Each element in the array corresponds to an animation, and the index of the element corresponds to the value of the animation in the enum.
+ */
+const ServoMotorAnimationAttributes _servo_motor_animations[ServoMotorAnimationCount] = {
+    {"an/hi.txt", 0} ///< The attributes for the "Hi" animation.
 };
 
 /**
@@ -103,12 +137,15 @@ class ServoController : public Task {
         ServoController(const char* name);
 
         /**
-         * @brief Load an animation from a file.
-         * @param filename Name of the file.
-         * @param frame_count Count of frames in the animation.
-         * @return True if successful, false otherwise.
+         * @brief Load an animation for the servo motor.
+         * 
+         * This method loads an animation from a file. The file and the number of frames for the animation 
+         * are determined by the ServoMotorAnimation parameter.
+         *
+         * @param animation The type of animation to load, as defined in the ServoMotorAnimation enum.
+         * @return True if the animation was successfully loaded, false otherwise.
          */
-        bool load_animation(String filename, byte frame_count);
+        bool load_animation(ServoMotorAnimation animation);
 
         /**
          * @brief Move the servos to their home positions.

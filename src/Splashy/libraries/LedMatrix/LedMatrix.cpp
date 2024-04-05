@@ -1,7 +1,6 @@
 /**
  * \file LedMatrix.cpp
  * \brief Source code file for the LedMatrix class.
- * \version 2.2
  */
 
 #include "LedMatrix.hpp"

@@ -1,9 +1,7 @@
 // ####################### LIBRARIES ###########################
 // release libraries
-#include "libraries/Config/Global.hpp"
 #include "libraries/Config/Config.hpp"
-#include "libraries/Core/Core.hpp"
-#include "libraries/Core/Core.cpp"
+
 
 #define DEBUG
 // debug libraries
@@ -21,6 +19,11 @@
 #include "libraries/ProximitySensor/ProximitySensor.cpp"
 #include "libraries/FiniteStateMachine/FiniteStateMachine.hpp"
 #include "libraries/FiniteStateMachine/FiniteStateMachine.cpp"
+#include "libraries/Pump/Pump.hpp"
+#include "libraries/Pump/Pump.cpp"
+#include "libraries/Config/Global.hpp"
+#include "libraries/Core/Core.hpp"
+#include "libraries/Core/Core.cpp"
 
 
 // ######################## DEFINE #############################

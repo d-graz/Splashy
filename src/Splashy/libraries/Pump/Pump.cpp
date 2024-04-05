@@ -25,16 +25,25 @@ void Pump::get_user_water_quantity(){
 }
 
 void Pump::hibernate(){
+    #ifdef PUMP_DEBUG
+    Serial.println(F("Hibernating pump"));
+    #endif
     detachInterrupt(digitalPinToInterrupt(FLOW_SENSOR_PIN));
     this->status = TaskStatus::HIBERNATED;
 }
 
 bool Pump::activate(){
     if(this->status == TaskStatus::HIBERNATED){
+        #ifdef PUMP_DEBUG
+        Serial.println(F("Activating pump"));
+        #endif
         attachInterrupt(digitalPinToInterrupt(FLOW_SENSOR_PIN), []{ _pulse_count++; }, RISING);
         this->status = TaskStatus::WAITING;
         return true;
     }
+    #ifdef DEBUG
+    Serial.println(F("Called activate on a non-hibernated pump"));
+    #endif
     return false;
 }
 

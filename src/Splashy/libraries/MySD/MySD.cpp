@@ -66,7 +66,7 @@ bool read_line(File file, char* buffer, byte buffer_size){
         #endif
         if(!control){
             #ifdef DEBUG
-            Serial.println(F("End of file"));
+            Serial.println(F("End of file reached when reading line"));
             #endif
             return false;
         }

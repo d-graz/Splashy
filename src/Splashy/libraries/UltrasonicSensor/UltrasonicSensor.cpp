@@ -1,6 +1,9 @@
 #include "UltrasonicSensor.hpp"
 
 UltrasonicSensor::UltrasonicSensor(const char* name): sonar(ULTRASONIC_SENSOR_TRIGGER_PIN, ULTRASONIC_SENSOR_ECHO_PIN, MAX_DISTANCE), Task(name){
+    #ifdef ULTRASONIC_SENSOR_DEBUG
+    Serial.println(F("Creating UltrasonicSensor object"));
+    #endif
     this->object_detected = false;
     for(byte i = 0; i < FILTER_SIZE; i++){
         this->filter[i] = sonar.ping_cm();
