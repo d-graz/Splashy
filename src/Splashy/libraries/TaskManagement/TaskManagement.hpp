@@ -1,7 +1,7 @@
 /**
  * @file TaskManagement.hpp
  * @brief Task management library for Arduino.
- * @version 2.7
+ * @version 2.7.1
  */
 
 #ifndef __TASKMANAGEMENT__
@@ -103,7 +103,7 @@ class Task {
          *
          * This sets the status of the task to HIBERNATED.
          */
-        void hibernate();
+        virtual void hibernate();
 
         /**
          * @brief Activates the task.
@@ -112,7 +112,7 @@ class Task {
          *
          * @return true if the task was activated successfully, false otherwise.
          */
-        bool activate();
+        virtual bool activate();
 
         /**
          * @brief Returns the name of the task.

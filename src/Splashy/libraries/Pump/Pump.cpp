@@ -1,0 +1,89 @@
+#include "Pump.hpp"
+
+Pump::Pump(const char* name): Task(name) {
+    #ifdef PUMP_DEBUG
+    Serial.println(F("Creating pump object"));
+    #endif
+    this->water_dispensed = 0.0;
+    this->target_water_dispensed = 0.0;
+    this->pump_active = false;
+    pinMode(FLOW_SENSOR_PIN, INPUT_PULLUP);
+    pinMode(PUMP_PIN, OUTPUT);
+    pinMode(POTENTIOMETER_PIN, INPUT);
+}
+
+void Pump::get_user_water_quantity(){
+    #ifdef PUMP_DEBUG
+    Serial.println(F("Getting user water quantity"));
+    #endif
+    short unsigned int potentiometer_value = analogRead(POTENTIOMETER_PIN);
+    this->target_water_dispensed = map_float((float) potentiometer_value, 0, 1023, MINUMUM_WATER_DISPENSED, MAXIMUM_WATER_DISPENSED);
+    #ifdef PUMP_DEBUG
+    Serial.print(F("Target water dispensed: "));
+    Serial.println(this->target_water_dispensed);
+    #endif
+}
+
+void Pump::hibernate(){
+    detachInterrupt(digitalPinToInterrupt(FLOW_SENSOR_PIN));
+    this->status = TaskStatus::HIBERNATED;
+}
+
+bool Pump::activate(){
+    if(this->status == TaskStatus::HIBERNATED){
+        attachInterrupt(digitalPinToInterrupt(FLOW_SENSOR_PIN), []{ _pulse_count++; }, RISING);
+        this->status = TaskStatus::WAITING;
+        return true;
+    }
+    return false;
+}
+
+void Pump::activate_pump(){
+    #ifdef PUMP_DEBUG
+    Serial.println(F("Activating pump"));
+    #endif
+    this->water_dispensed = 0.0;
+    noInterrupts();
+    _pulse_count = 0;
+    interrupts();
+    digitalWrite(PUMP_PIN, HIGH);
+    this->pump_active = true;
+}
+
+bool Pump::next(){
+    float quantity_dispensed;
+    #ifdef DEBUG
+    if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
+        Serial.println(F("Task is dead or waiting"));
+        Serial.println("Generated exception in LedMatrix::next()");
+        return false;
+    }
+    #endif
+    if(!this->pump_active){
+        #ifdef PUMP_DEBUG
+        Serial.println(F("Pump is not active, nothing to do"));
+        #endif
+        return true;
+    }
+    noInterrupts();
+    quantity_dispensed = (float) _pulse_count * FLOW_SENSOR_CONSTANT;
+    _pulse_count = 0;
+    interrupts();
+    this->water_dispensed += quantity_dispensed;
+    #ifdef PUMP_DEBUG
+    Serial.print(F("Water dispensed: "));
+    Serial.println(this->water_dispensed);
+    #endif
+    if(this->water_dispensed >= this->target_water_dispensed){
+        #ifdef PUMP_DEBUG
+        Serial.println(F("Target water dispensed reached"));
+        #endif
+        digitalWrite(PUMP_PIN, LOW);
+        this->pump_active = false;
+    }
+    return true;
+}
+
+bool Pump::is_pump_active(){
+    return this->pump_active;
+}

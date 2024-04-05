@@ -1,7 +1,7 @@
 /**
  * @file LedMatrix.hpp
  * @brief File containing the definition of the LedMatrix class, which is used for controlling a LED matrix.
- * @version 2.3
+ * @version 2.3.1
  */
 
 
@@ -23,6 +23,7 @@
 #define DEFAULT_BRIGHTNESS 8 ///< The default brightness of the LED matrix.
 #define ANIMATION_LINE_LENGTH 11 ///< The length of each line in the animation file.
 //TODO: [EXTERN] create a fill.txt animation for the heart that should be displayed when the splashy is refilling
+//TODO: [EXTERN] create an idle.txt animation
 /**
  * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
@@ -32,6 +33,7 @@
 enum LedMatrixAnimation{
     Boot, ///< Boot animation.
     Refill, ///< Filling animation.
+    Idle, ///< Idle animation.
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
@@ -54,7 +56,8 @@ struct LedMatrixAnimationAttributes {
  */
 const LedMatrixAnimationAttributes _led_matrix_animations[AnimationCount] = {
     {"an/boot.txt", 0},
-    {"an/fill.txt", 0}
+    {"an/fill.txt", 0},
+    {"an/idle.txt", 0}
 };
 
 /**

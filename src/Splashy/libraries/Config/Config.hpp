@@ -26,4 +26,13 @@
 #define ULTRASONIC_SENSOR_TRIGGER_PIN 26
 #define ULTRASONIC_SENSOR_ECHO_PIN 27
 
+// flow sensor pins
+#define FLOW_SENSOR_PIN 28
+
+// potentiometer pin
+#define POTENTIOMETER_PIN A3
+
+// pump pin
+#define PUMP_PIN 29
+
 #endif

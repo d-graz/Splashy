@@ -10,6 +10,7 @@
 #include "../ServoController/ServoController.hpp"
 #include "../ProximitySensor/ProximitySensor.hpp"
 #include "../UltrasonicSensor/UltrasonicSensor.hpp"
+#include "../Pump/Pump.hpp"
 
 // led matrix object
 LedMatrix *led_matrix;
@@ -22,5 +23,8 @@ ProximitySensor *proximity_sensor;
 
 // ultrasonic sensor
 UltrasonicSensor *ultrasonic_sensor;
+
+// pump
+Pump *pump;
 
 #endif

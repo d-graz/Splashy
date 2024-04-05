@@ -103,13 +103,13 @@ void LedMatrix::show_error(){
 }
 
 bool LedMatrix::next(){
+    #ifdef DEBUG
     if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
-        #ifdef DEBUG
         Serial.println(F("Task is dead or waiting"));
         Serial.println("Generated exception in LedMatrix::next()");
-        #endif
         return false;
     }
+    #endif
     if(this->frame_count != 0){
         if (this->current_frame == this->frame_count){
             this->status = TaskStatus::HIBERNATED;

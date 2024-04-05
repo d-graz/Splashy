@@ -77,7 +77,6 @@ void setup() {
   scheduler->executeByName(F("Led"), 3);
 
   //init the ultrasonic sensor
-  //TODO: [CRITICAL] remember to activate this task before enetering the loop
   #ifdef DEBUG
   Serial.println(F("Init UltrasonicSensor and adding to the scheduler"));
   #endif
@@ -87,7 +86,6 @@ void setup() {
   scheduler->executeByName(F("Led"), 3);
 
   //init the proximity sensor
-  //TODO: [CRITICAL] remember to activate this task before enetering the loop
   #ifdef DEBUG
   Serial.println(F("Init ProximitySensor and adding to the scheduler"));
   #endif
@@ -96,7 +94,14 @@ void setup() {
   scheduler->add_task(proximity_sensor);
   scheduler->executeByName(F("Led"), 3);
 
-  //TODO: [CRITICAL] init pump sistem
+  //init the pump
+  #ifdef DEBUG
+  Serial.println(F("Init Pump and adding to the scheduler"));
+  #endif
+  pump = new Pump("Pump");
+  scheduler->executeByName(F("Led"));
+  scheduler->add_task(pump);
+  scheduler->executeByName(F("Led"));
 
   //init the fsm
   #ifdef DEBUG
@@ -114,7 +119,8 @@ void setup() {
   scheduler->executeByName(F("Led"), 2);
 
   //load the idle animation facial expression
-  //TODO: [CRITICAL, EXTERN] create an idle animation and maybe even a servo motor animation
+  led_matrix->load_animation(LedMatrixAnimation::Idle);
+  //TODO: [EXTERN] servo motor animation for idle ?
 
   #ifdef DEBUG
   Serial.println(F("Setup done"));
