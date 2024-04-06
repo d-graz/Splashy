@@ -1,13 +1,7 @@
 #include "FiniteStateMachine.hpp"
 
 #define ATTRACTION_TIME 30000 ///< The time in milliseconds to spend in the attract state.
-
-// private function declarations
-void to_Idle_state();
-void to_Attract_state();
-void to_Filling_state();
-void to_Petting_state();
-void to_Filled_state();
+#define SADNESS_TIME 300000 ///< The time in milliseconds to show the sad face of the penguin if not being used in idle mode.
 
 /**
  * If the ultrasonic sensor detects a water bottle, the state machine transitions to the Filling state.
@@ -19,11 +13,22 @@ State idle(unsigned int state_entering_time) {
     Serial.println(F("Currently in IDLE"));
     #endif
     if(ultrasonic_sensor->is_water_bottle_detected()){
-        to_Filling_state();
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Bottle detected"));
+        Serial.println(F("Transitioning to FILLING"));
+        #endif
         return State::FILLING;
     } else if (proximity_sensor->is_person_detected()){
-        to_Attract_state();
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Person detected"));
+        Serial.println(F("Transitioning to ATTRACT"));
+        #endif
         return State::ATTRACT;
+    } else if(millis() > state_entering_time + SADNESS_TIME){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Time to show sad face"));
+        #endif
+        led_matrix->load_animation(LedMatrixAnimation::Sad);
     }
     //TODO: [CRITICAL] Add the condition for petting state
     return State::IDLE;
@@ -71,18 +76,14 @@ State petting(unsigned int state_entering_time){
 FiniteStateMachine::FiniteStateMachine() {
     this->current_state = State::IDLE;
     this->state_entering_time = millis();
-    state_functions[State::IDLE] = idle;
-    state_functions[State::ATTRACT] = attract;
-    state_functions[State::FILLING] = filling;
-    state_functions[State::PETTING] = petting;
-    state_functions[State::FILLED] = filled;
 }
 
 void FiniteStateMachine::next() {
-    State next_state = this->state_functions[this->current_state](this->state_entering_time);
+    State next_state = _state_functions[this->current_state](this->state_entering_time);
     if (next_state != this->current_state){
         this->current_state = next_state;
         this->state_entering_time = millis();
+        _transition_functions[this->current_state]();
     }
 }
 

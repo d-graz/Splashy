@@ -25,11 +25,36 @@ State filling(unsigned int state_entering_time);
 State petting(unsigned int state_entering_time);
 State filled(unsigned int state_entering_time);
 
+StateFunction _state_functions[StateCount] = {
+    idle,
+    attract,
+    filling,
+    petting,
+    filled
+};
+
+
+typedef void (*TransitionFunction)();
+
+void to_Idle_state();
+void to_Attract_state();
+void to_Filling_state();
+void to_Petting_state();
+void to_Filled_state();
+
+TransitionFunction _transition_functions[StateCount] = {
+    to_Idle_state,
+    to_Attract_state,
+    to_Filling_state,
+    to_Petting_state,
+    to_Filled_state
+};
+
+
 
 class FiniteStateMachine {
     private:
         State current_state;
-        StateFunction state_functions[StateCount];
         unsigned int state_entering_time;
     public:
         FiniteStateMachine();

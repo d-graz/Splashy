@@ -25,6 +25,7 @@
 //TODO: [EXTERN] create a fill.txt animation for the heart that should be displayed when the splashy is refilling
 //TODO: [EXTERN] create an idle.txt animation for idle state
 //TODO: [EXTERN] create an att.txt animation for attract state
+//TODO: [EXTERN] create a sad.txt animation for sad face in idle state
 /**
  * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
@@ -36,6 +37,7 @@ enum LedMatrixAnimation{
     Refill, ///< Filling animation.
     Idle, ///< Idle animation.
     Attract, ///< Attract animation.
+    Sad, ///< Sad animation.
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
@@ -60,7 +62,8 @@ const LedMatrixAnimationAttributes _led_matrix_animations[AnimationCount] = {
     {"an/boot.txt", 0},
     {"an/fill.txt", 0},
     {"an/idle.txt", 0},
-    {"an/att.txt", 0}
+    {"an/att.txt", 0},
+    {"an/sad.txt", 0}
 };
 
 /**

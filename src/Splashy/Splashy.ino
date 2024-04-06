@@ -118,12 +118,12 @@ void setup() {
   #ifdef DEBUG
   Serial.println(F("Activating proximity sensor and ultrasonic sensor before entering the loop in IDLE status"));
   #endif
-  proximity_sensor->activate();
-  ultrasonic_sensor->activate();
+  handle_error(proximity_sensor->activate(), F("Failed to activate proximity sensor"));
+  handle_error(ultrasonic_sensor->activate(), F("Failed to activate ultrasonic sensor"));
   handle_error(scheduler->executeByName(F("Led"), 2), F("Failed to execute LedMatrix"));
 
   //load the idle animation facial expression
-  led_matrix->load_animation(LedMatrixAnimation::Idle);
+  handle_error(led_matrix->load_animation(LedMatrixAnimation::Idle), F("Failed to load idle animation"));
   //TODO: [EXTERN] servo motor animation for idle ?
 
   #ifdef DEBUG
