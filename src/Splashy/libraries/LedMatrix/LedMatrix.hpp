@@ -26,6 +26,7 @@
 //TODO: [EXTERN] create an idle.txt animation for idle state
 //TODO: [EXTERN] create an att.txt animation for attract state
 //TODO: [EXTERN] create a sad.txt animation for sad face in idle state
+//TODO: [EXTERN] create a fed.txt animation for filled state
 /**
  * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
@@ -38,6 +39,7 @@ enum LedMatrixAnimation{
     Idle, ///< Idle animation.
     Attract, ///< Attract animation.
     Sad, ///< Sad animation.
+    Filled, ///< Filled animation.
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
@@ -63,7 +65,8 @@ const LedMatrixAnimationAttributes _led_matrix_animations[AnimationCount] = {
     {"an/fill.txt", 0},
     {"an/idle.txt", 0},
     {"an/att.txt", 0},
-    {"an/sad.txt", 0}
+    {"an/sad.txt", 0},
+    {"an/fed.txt", 0}
 };
 
 /**

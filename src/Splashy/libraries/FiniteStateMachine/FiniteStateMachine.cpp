@@ -38,17 +38,15 @@ State attract(unsigned int state_entering_time){
     #ifdef FINITE_STATE_MACHINE_DEBUG
     Serial.println(F("Currently in ATTRACT"));
     #endif
-    if(millis() - state_entering_time > ATTRACTION_TIME){
+    if (ultrasonic_sensor->is_water_bottle_detected()){
+        return State::FILLING;
+    } else if (millis() - state_entering_time > ATTRACTION_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
         Serial.println(F("Time to leave ATTRACT"));
         #endif
-        to_Idle_state();
         return State::IDLE;
     }
-    if (ultrasonic_sensor->is_water_bottle_detected()){
-        to_Filling_state();
-        return State::FILLING;
-    }
+    
     //TODO: [CRITICAL] Add the condition for petting state (evaluate if this is necessary)
     return State::ATTRACT;
 }
@@ -56,16 +54,23 @@ State attract(unsigned int state_entering_time){
 State filling(unsigned int state_entering_time){
     if(!ultrasonic_sensor->is_water_bottle_detected() && pump->is_pump_active()){
         pump->hibernate();
-        to_Idle_state();
-        return State::IDLE;
-    } else if (ultrasonic_sensor->is_water_bottle_detected() && !pump->is_pump_active()){
-        to_Filled_state();
+        return State::FILLED;
+    } else if (!pump->is_pump_active()){
         return State::FILLED;
     }
     return State::FILLING;
 }
 
 State filled(unsigned int state_entering_time){
+    if(!ultrasonic_sensor->is_water_bottle_detected()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Bottle removed"));
+        #endif
+        return State::IDLE;
+    }
+    #ifdef FINITE_STATE_MACHINE_DEBUG
+    Serial.println(F("Waiting for the user to remove his/her bottle"));
+    #endif
     return State::FILLED;
 }
 
@@ -89,10 +94,13 @@ void FiniteStateMachine::next() {
 
 /**
  * Activates the proximity sensor in order to detect persons
+ * homes the servo motor
  * Loads the idle animation on the led matrix
+ * //TODO: [EXTERN] servo motor animation for idle ?
 */
 void to_Idle_state(){
     handle_error(proximity_sensor->activate(), F("Failed to activate proximity sensor"));
+    servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Idle), F("Failed to load idle animation"));
 }
 
@@ -117,29 +125,20 @@ void to_Attract_state(){
  * Start the pump up
 */
 void to_Filling_state(){
-    #ifdef FINITE_STATE_MACHINE_DEBUG
-    Serial.println(F("Bottle detected"));
-    Serial.println(F("Stopping proximity sensor and servo controller"));
-    #endif
     proximity_sensor->hibernate();
     servo_controller->hibernate();
-    #ifdef FINITE_STATE_MACHINE_DEBUG
-    Serial.println(F("Homing the servo"));
-    #endif
     servo_controller->home(false);
-    #ifdef FINITE_STATE_MACHINE_DEBUG
-    Serial.println(F("Loading refill animation"));
-    #endif
-    handle_error(led_matrix->load_animation(LedMatrixAnimation::Refill), F("Error loading refill animation in IDLE state"));
+    handle_error(led_matrix->load_animation(LedMatrixAnimation::Refill), F("Error loading refill animation"));
     handle_error(pump->activate(), F("Error activating pump in IDLE state"));
     pump->activate_pump();
 }
 
-void to_Petting_state(){};
-
+/**
+ * Load the filled animation on the led matrix
+ * //TODO: [EXTERN] servo motor animation for filled ?
+*/
 void to_Filled_state(){
-    #ifdef FINITE_STATE_MACHINE_DEBUG
-    Serial.println(F("Bottle filled"));
-    #endif
-    //TODO: load filled animation face expression and maybe some servo motor animation
+    handle_error(led_matrix->load_animation(LedMatrixAnimation::Filled), F("Error loading filled animation"));
 }
+
+void to_Petting_state(){};

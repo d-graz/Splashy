@@ -40,10 +40,10 @@ FiniteStateMachine *fsm;
 
 // ##################### SETUP #################################
 void setup() {
-  #ifdef DEBUG
   // start serial communication
   Serial.begin(BAUD_RATE);
   delay(2000);
+  #ifdef DEBUG
   Serial.println(F("Init setup"));
   #endif
 
