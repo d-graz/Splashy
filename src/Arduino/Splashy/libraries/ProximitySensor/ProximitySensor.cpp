@@ -2,30 +2,43 @@
 
 ProximitySensor::ProximitySensor(const char* name): Task(name){
     #ifdef PROXIMITY_SENSOR_DEBUG
-    Serial.println(F("Creating ProximitySensor object"));
+        Serial.println(F("Creating ProximitySensor object"));
     #endif
     this->object_detected = false;
-    pinMode(PROXIMITY_SENSOR_PIN, INPUT);
+    #ifndef PROXIMITY_SENSOR_SIMULATION
+        pinMode(PROXIMITY_SENSOR_PIN, INPUT);
+    #else
+        pinMode(A2, INPUT);
+    #endif
     this->status = TaskStatus::HIBERNATED;
 }
 
 bool ProximitySensor::next(){
     #ifdef DEBUG
-    if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
-        Serial.println(F("Task is dead or waiting"));
-        Serial.println("Generated exception in ProximitySensor::next()");
-        return false;
-    }
+        #ifdef WARN
+            if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
+                Serial.println(F("[WARN]: Task is dead or waiting"));
+                Serial.println("Generated exception in ProximitySensor::next()");
+            }
+        #endif
     #endif
-    this->object_detected = digitalRead(PROXIMITY_SENSOR_PIN);
+    #ifndef PROXIMITY_SENSOR_SIMULATION
+        this->object_detected = digitalRead(PROXIMITY_SENSOR_PIN);
+    #else
+        if(analogRead(A2)> 1000){
+            this->object_detected = true;
+        } else {
+            this->object_detected = false;
+        }
+    #endif
     if(this->object_detected){
         #ifdef PROXIMITY_SENSOR_DEBUG
-        Serial.println(F("Object detected"));
+            Serial.println(F("Object detected"));
         #endif
         this->sleep_time_millis = SLEEP_AFTER_DETECTION;
     } else {
         #ifdef PROXIMITY_SENSOR_DEBUG
-        Serial.println(F("No object detected"));
+            Serial.println(F("No object detected"));
         #endif
         this->sleep_time_millis = SLEEP_AFTER_NO_DETECTION;
     }

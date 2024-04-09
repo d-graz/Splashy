@@ -1,7 +1,7 @@
 /**
  * @file LedMatrix.hpp
  * @brief File containing the definition of the LedMatrix class, which is used for controlling a LED matrix.
- * @version 2.3.1
+ * @version 2.3.3
  */
 
 

@@ -2,7 +2,7 @@
 
 UltrasonicSensor::UltrasonicSensor(const char* name): sonar(ULTRASONIC_SENSOR_TRIGGER_PIN, ULTRASONIC_SENSOR_ECHO_PIN, MAX_DISTANCE), Task(name){
     #ifdef ULTRASONIC_SENSOR_DEBUG
-    Serial.println(F("Creating UltrasonicSensor object"));
+        Serial.println(F("Creating UltrasonicSensor object"));
     #endif
     this->object_detected = false;
     for(byte i = 0; i < FILTER_SIZE; i++){
@@ -20,11 +20,12 @@ float UltrasonicSensor::get_distance(){
 
 bool UltrasonicSensor::next(){
     #ifdef DEBUG
-    if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
-        Serial.println(F("Task is dead or waiting"));
-        Serial.println("Generated exception in UltrasonicSensor::next()");
-        return false;
-    }
+        #ifdef WARN
+            if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
+                Serial.println(F("Task is dead or waiting"));
+            Serial.println("Generated exception in UltrasonicSensor::next()");
+        }
+        #endif
     #endif
     for(byte i = 0; i < FILTER_UPDATE_SIZE; i++){
         this->filter[this->filter_index] = this->sonar.ping_cm();
@@ -32,12 +33,12 @@ bool UltrasonicSensor::next(){
     }
     if(this->get_distance() < TRIGGERING_DISTANCE){
         #ifdef ULTRASONIC_SENSOR_DEBUG
-        Serial.println(F("Object detected"));
+            Serial.println(F("Object detected"));
         #endif
-        this->object_detected = true;
+            this->object_detected = true;
     } else {
         #ifdef ULTRASONIC_SENSOR_DEBUG
-        Serial.println(F("No object detected"));
+            Serial.println(F("No object detected"));
         #endif
         this->object_detected = false;
     }

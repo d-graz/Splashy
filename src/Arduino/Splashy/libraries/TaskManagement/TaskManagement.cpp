@@ -52,7 +52,7 @@ Scheduler::Scheduler(){
 bool Scheduler::add_task(Task* task){
     if (this->task_count == MAX_CONCURRENT_TASKS){
         #ifdef DEBUG
-        Serial.println(F("Maximum number of tasks reached"));
+            Serial.println(F("Maximum number of tasks reached"));
         #endif
         return false;
     }
@@ -63,10 +63,10 @@ bool Scheduler::add_task(Task* task){
     this->task_list[i] = task;
     this->task_count++;
     #ifdef SCHEDULER_DEBUG
-    Serial.print(F("Task added at index "));
-    Serial.println(i);
-    Serial.print(F("Task count: "));
-    Serial.println(this->task_count);
+        Serial.print(F("Task added at index "));
+        Serial.println(i);
+        Serial.print(F("Task count: "));
+        Serial.println(this->task_count);
     #endif
     return true;
 }
@@ -82,10 +82,10 @@ void Scheduler::delete_task(Task* task_to_delete) {
     }
     #ifdef DEBUG
     else 
-    {
-        Serial.println(F("BAD ERROR HAPPEN IN SCHEDULER!!"));
-        Serial.println(F("Task for deletion not found!!"));
-    }
+        {
+            Serial.println(F("BAD ERROR HAPPEN IN SCHEDULER!!"));
+            Serial.println(F("Task for deletion not found!!"));
+        }
     #endif
 }
 
@@ -104,9 +104,9 @@ void Scheduler::forceClean() {
     }
     #ifdef SCHEDULER_DEBUG
     else
-    {
-        Serial.println(F("No need to clean"));
-    }
+        {
+            Serial.println(F("No need to clean"));
+        }
     #endif
 }
 
@@ -124,25 +124,25 @@ bool Scheduler::executeAll() {
     for(byte i = 0; i < MAX_CONCURRENT_TASKS; i++){
         if(this->task_list[i] != nullptr){
             #ifdef SCHEDULER_DEBUG
-            Serial.print(F("Checking task at index "));
-            Serial.println(i);
+                Serial.print(F("Checking task at index "));
+                Serial.println(i);
             #endif
             TaskStatus status = this->task_list[i]->get_status();
             #ifdef SCHEDULER_DEBUG
-            Serial.print(F("Task status: "));
-            Serial.println(task_status_to_string(status));
+                Serial.print(F("Task status: "));
+                Serial.println(task_status_to_string(status));
             #endif
             if(status == TaskStatus::READY){
                 #ifdef SCHEDULER_DEBUG
-                Serial.print(F("Executing task "));
-                Serial.println(i);
+                    Serial.print(F("Executing task "));
+                    Serial.println(i);
                 #endif
                 empty_execution = false;
                 control = this->task_list[i]->next();
                 if(!control){
                     #ifdef DEBUG
-                    Serial.print(F("Error executing task "));
-                    Serial.println(i);
+                        Serial.print(F("Error executing task "));
+                        Serial.println(i);
                     #endif
                     return false;
                 }
@@ -152,18 +152,18 @@ bool Scheduler::executeAll() {
         }
     }
     #ifdef SCHEDULER_DEBUG
-    if(empty_execution){
-        Serial.println(F("No task executed"));
-    } else {
-        Serial.println(F("All tasks executed successfully"));
-    }
-    if(this->need_clean){
-        Serial.println(F("Need to clean the task list"));
-    }
+        if(empty_execution){
+            Serial.println(F("No task executed"));
+        } else {
+            Serial.println(F("All tasks executed successfully"));
+        }
+        if(this->need_clean){
+            Serial.println(F("Need to clean the task list"));
+        }
     #endif
     if (empty_execution && this->need_clean){
         #ifdef SCHEDULER_DEBUG
-        Serial.println(F("Cleaning the task list"));
+            Serial.println(F("Cleaning the task list"));
         #endif
         this->clean();
     }
@@ -174,8 +174,8 @@ bool Scheduler::executeAll(byte loop_count){
     for(byte i = 0; i < loop_count; i++) {
         if(!this->executeAll()) {
             #ifdef DEBUG
-            Serial.print(F("Error executing all tasks in loop "));
-            Serial.println(i);
+                Serial.print(F("Error executing all tasks in loop "));
+                Serial.println(i);
             #endif
             return false;
         }
@@ -192,8 +192,8 @@ bool Scheduler::executeByName(String name, byte loop_count = 1){
                     control = this->task_list[i]->next();
                     if(!control){
                         #ifdef DEBUG
-                        Serial.print(F("Error executing task with name "));
-                        Serial.println(name);
+                            Serial.print(F("Error executing task with name "));
+                            Serial.println(name);
                         #endif
                         return false;
                     }
@@ -203,9 +203,9 @@ bool Scheduler::executeByName(String name, byte loop_count = 1){
         }
     }
     #ifdef DEBUG
-    Serial.print(F("Task with name \""));
-    Serial.print(name);
-    Serial.println(F("\" not found"));
+        Serial.print(F("Task with name \""));
+        Serial.print(name);
+        Serial.println(F("\" not found"));
     #endif
     return false;
 }

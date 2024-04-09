@@ -1,7 +1,7 @@
 /**
  * @file ProximitySensor.hpp
  * @brief Header file for the ProximitySensor class.
- * @version 1.1
+ * @version 1.2
  */
 
 #ifndef __PROXIMITYSENSOR__
@@ -12,6 +12,7 @@
 
 #ifdef DEBUG
 #define PROXIMITY_SENSOR_DEBUG
+#define PROXIMITY_SENSOR_SIMULATION
 #endif
 
 //TODO: [CONFIG] define sleep time after detection

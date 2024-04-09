@@ -1,7 +1,7 @@
 /**
  * @file UltrasonicSensor.hpp
  * @brief Header file for the UltrasonicSensor class.
- * @version 1.0
+ * @version 1.0.1
  */
 
 #ifndef __ULTRASONICSENSOR__
