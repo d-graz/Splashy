@@ -124,7 +124,7 @@ bool Scheduler::executeAll() {
     for(byte i = 0; i < MAX_CONCURRENT_TASKS; i++){
         if(this->task_list[i] != nullptr){
             #ifdef SCHEDULER_DEBUG
-            Serial.print(F("Checking task at index"));
+            Serial.print(F("Checking task at index "));
             Serial.println(i);
             #endif
             TaskStatus status = this->task_list[i]->get_status();
@@ -184,20 +184,28 @@ bool Scheduler::executeAll(byte loop_count){
 }
 
 bool Scheduler::executeByName(String name, byte loop_count = 1){
+    bool control;
     for(byte i = 0; i < MAX_CONCURRENT_TASKS; i++){
         if(this->task_list[i] != nullptr){
             if(strcmp(this->task_list[i]->get_name(), name.c_str()) == 0){
                 for(byte j = 0; j < loop_count; j++){
-                    this->task_list[i]->next();
+                    control = this->task_list[i]->next();
+                    if(!control){
+                        #ifdef DEBUG
+                        Serial.print(F("Error executing task with name "));
+                        Serial.println(name);
+                        #endif
+                        return false;
+                    }
                 }
                 return true;
             }
         }
     }
-    #ifdef SCHEDULER_DEBUG
-    Serial.print(F("Task with name "));
+    #ifdef DEBUG
+    Serial.print(F("Task with name \""));
     Serial.print(name);
-    Serial.println(F(" not found"));
+    Serial.println(F("\" not found"));
     #endif
     return false;
 }

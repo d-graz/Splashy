@@ -15,9 +15,9 @@
 #define LED_MATRIX_CS_PIN 3
 
 // servo motors pins
-#define LEFT_WING_SERVO_PIN 22
-#define RIGHT_WING_SERVO_PIN 23
-#define HEAD_SERVO_PIN 24
+#define LEFT_WING_SERVO_PIN 13
+#define RIGHT_WING_SERVO_PIN 12
+#define HEAD_SERVO_PIN 11
 
 // proximity sensor pins
 #define PROXIMITY_SENSOR_PIN 25

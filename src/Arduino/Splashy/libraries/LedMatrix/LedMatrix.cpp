@@ -50,7 +50,7 @@ bool LedMatrix::next_frame(){
         if(!control){
             #ifdef DEBUG
             Serial.println(F("Generated error in LedMatrix::next_frame()"));
-            Serial.println(F("Bad formatting for file"));
+            Serial.println(F("Bad formatting for file while reading matrix"));
             #endif
             return false;
         }
@@ -70,7 +70,7 @@ bool LedMatrix::next_frame(){
     if (!control){
         #ifdef DEBUG
         Serial.println(F("Generated error in LedMatrix::next_frame()"));
-        Serial.println(F("Bad formatting file"));
+        Serial.println(F("Bad formatting file when reading sleep time"));
         #endif
         return false;
     }
@@ -102,11 +102,10 @@ void LedMatrix::show_error(){
 }
 
 bool LedMatrix::next(){
-    #ifdef DEBUG
+    #if DEBUG >= 1
     if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
-        Serial.println(F("Task is dead or waiting"));
+        Serial.println(F("[WARN] : called next() on a dead or waiting task"));
         Serial.println("Generated exception in LedMatrix::next()");
-        return false;
     }
     #endif
     if(this->frame_count != 0){
