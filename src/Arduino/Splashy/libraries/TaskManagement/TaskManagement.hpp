@@ -1,7 +1,7 @@
 /**
  * @file TaskManagement.hpp
  * @brief Task management library for Arduino.
- * @version 2.7.3
+ * @version 2.8
  */
 
 #ifndef __TASKMANAGEMENT__
@@ -10,8 +10,8 @@
 #include <Arduino.h>
 
 #ifdef DEBUG
-//#define TASK_DEBUG ///< Enable fine grained debugging for the Task management operations.
-//#define SCHEDULER_DEBUG ///< Enable fine grained debugging for the Scheduler operations.
+#define TASK_DEBUG ///< Enable fine grained debugging for the Task management operations.
+#define SCHEDULER_DEBUG ///< Enable fine grained debugging for the Scheduler operations.
 #endif
 
 #define MAX_CONCURRENT_TASKS 5 ///< Maximum number of concurrent tasks.
@@ -56,8 +56,8 @@ const char* task_status_to_string(TaskStatus status){
 class Task {
     protected:
         TaskStatus status;                   /**< Current status of the task. */
-        unsigned int next_execution_millis;  /**< Time for the next execution of the task. */
-        unsigned int sleep_time_millis;      /**< Next sleep time between executions of the task. */
+        unsigned long int next_execution_millis;  /**< Time for the next execution of the task. */
+        unsigned long int sleep_time_millis;      /**< Next sleep time between executions of the task. */
         char name[TASK_NAME_LENGTH];         /**< Name of the task. */
 
         /**

@@ -1,7 +1,7 @@
 /**
  * @file UltrasonicSensor.hpp
  * @brief Header file for the UltrasonicSensor class.
- * @version 1.0.1
+ * @version 1.1
  */
 
 #ifndef __ULTRASONICSENSOR__
@@ -12,7 +12,7 @@
 #include "../TaskManagement/TaskManagement.hpp"
 
 #ifdef DEBUG
-#define ULTRASONIC_SENSOR_DEBUG
+//#define ULTRASONIC_SENSOR_DEBUG
 #endif
 
 #define SLEEP_TIME 50 ///< Time to sleep after not detecting an object.
@@ -38,7 +38,13 @@ class UltrasonicSensor : public Task {
          * @brief Update the filter with the new distance reading.
          * @return The filtered distance.
          */
-        float get_distance(); 
+        float get_distance();
+
+        /**
+         * @brief Read the distance from the ultrasonic sensor. Wrapper for the ping_cm method of the NewPing library.
+         * @return The distance in cm.
+         */
+        float read_distance(); 
 
     public:
         /**

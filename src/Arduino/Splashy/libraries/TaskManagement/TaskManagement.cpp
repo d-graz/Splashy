@@ -9,8 +9,23 @@ Task::Task(const char* name){
 }
 
 TaskStatus Task::get_status(){
-    unsigned int milliseconds = millis();
+    #ifdef TASK_DEBUG
+        Serial.print(F("Task name: ")); 
+        Serial.println(this->name);
+        Serial.print(F("Task status: "));
+        Serial.println(task_status_to_string(this->status));
+    #endif
+    unsigned long int milliseconds = millis();
+    #ifdef TASK_DEBUG
+        Serial.print(F("Current millis: "));
+        Serial.println(milliseconds);
+        Serial.print(F("Next execution millis: "));
+        Serial.println(this->next_execution_millis);
+    #endif
     if(this->status == TaskStatus::WAITING && milliseconds >= this->next_execution_millis){
+        #ifdef TASK_DEBUG
+            Serial.println(F("Task is ready"));
+        #endif
         this->status = TaskStatus::READY;
     }
     return this->status;
@@ -23,7 +38,15 @@ void Task::kill(){
 
 void Task::update_next_execution_millis(){
     this->status = TaskStatus::WAITING;
+    #ifdef TASK_DEBUG
+        Serial.print(F("Updating next execution millis for task "));
+        Serial.println(this->name);
+    #endif
     this->next_execution_millis = millis() + this->sleep_time_millis;
+    #ifdef TASK_DEBUG
+        Serial.print(F("Next execution millis: "));
+        Serial.println(this->next_execution_millis);
+    #endif
 }
 
 void Task::hibernate(){
@@ -124,8 +147,8 @@ bool Scheduler::executeAll() {
     for(byte i = 0; i < MAX_CONCURRENT_TASKS; i++){
         if(this->task_list[i] != nullptr){
             #ifdef SCHEDULER_DEBUG
-                Serial.print(F("Checking task at index "));
-                Serial.println(i);
+                Serial.print(F("Checking task "));
+                Serial.println(this->task_list[i]->get_name());
             #endif
             TaskStatus status = this->task_list[i]->get_status();
             #ifdef SCHEDULER_DEBUG
@@ -135,7 +158,7 @@ bool Scheduler::executeAll() {
             if(status == TaskStatus::READY){
                 #ifdef SCHEDULER_DEBUG
                     Serial.print(F("Executing task "));
-                    Serial.println(i);
+                    Serial.println(this->task_list[i]->get_name());
                 #endif
                 empty_execution = false;
                 control = this->task_list[i]->next();

@@ -4,7 +4,7 @@
 
 
 #define DEBUG
-#define WARN
+//#define WARN
 #define TEST 
 // debug libraries
 #include "libraries/LedMatrix/LedMatrix.hpp"
