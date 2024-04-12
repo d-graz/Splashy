@@ -12,6 +12,7 @@
 #define PUMP_SIMULATION
 #endif
 
+//TODO: [CONFIG] define the flow sensor constant
 #define FLOW_SENSOR_CONSTANT 0.01 ///< The constant to convert flow sensor pulses to litres.
 
 #define MINUMUM_WATER_DISPENSED 0.2 ///< Minimum amount of water that can be dispensed in litres.

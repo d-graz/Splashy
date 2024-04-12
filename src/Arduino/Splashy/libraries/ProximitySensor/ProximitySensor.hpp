@@ -15,9 +15,7 @@
 #define PROXIMITY_SENSOR_SIMULATION
 #endif
 
-//TODO: [CONFIG] define sleep time after detection
-#define SLEEP_AFTER_DETECTION 600000 ///< Time to sleep after detecting an object.
-#define SLEEP_AFTER_NO_DETECTION 150 ///< Time to sleep after not detecting an object.
+#define SLEEP_TIME 3000 ///< Time to sleep (Minumum 3s, hardware imposed).
 
 /**
  * @class ProximitySensor

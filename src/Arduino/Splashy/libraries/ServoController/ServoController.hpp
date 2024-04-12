@@ -4,6 +4,7 @@
  * @version 2.5.2
  */
 //TODO: [EXTERN] create a hi.txt animation for attract state
+//TODO: [EXTERN] create an hap.txt animation for happy state
 #include <Arduino.h>
 #include <Servo.h>
 #include "../Config/Config.hpp"
@@ -49,6 +50,8 @@ enum class ServoName {
  */
 enum ServoMotorAnimation {
     Hi, ///< Represents a "Hi" animation.
+    Test, ///< Represents a "Test" animation.
+    HappyMotor, ///< Represents a "Happy" animation.
     ServoMotorAnimationCount ///< The total count of animations. Always keep this as the last element.
 };
 
@@ -72,7 +75,9 @@ struct ServoMotorAnimationAttributes {
  * Each element in the array corresponds to an animation, and the index of the element corresponds to the value of the animation in the enum.
  */
 const ServoMotorAnimationAttributes _servo_motor_animations[ServoMotorAnimationCount] = {
-    {"an/hi.txt", 0} ///< The attributes for the "Hi" animation.
+    {"mtr/hi.txt", 0}, ///< The attributes for the "Hi" animation.
+    {"mtr/tst.txt", 10}, ///< The attributes for the "Test" animation.
+    {"mtr/hap.txt", 10} ///< The attributes for the "Happy" animation.
 };
 
 /**

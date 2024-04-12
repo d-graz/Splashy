@@ -11,6 +11,7 @@ ProximitySensor::ProximitySensor(const char* name): Task(name){
         pinMode(A2, INPUT);
     #endif
     this->status = TaskStatus::HIBERNATED;
+    this->sleep_time_millis = SLEEP_TIME;
 }
 
 bool ProximitySensor::next(){
@@ -31,17 +32,13 @@ bool ProximitySensor::next(){
             this->object_detected = false;
         }
     #endif
-    if(this->object_detected){
-        #ifdef PROXIMITY_SENSOR_DEBUG
+    #ifdef PROXIMITY_SENSOR_DEBUG
+        if(this->object_detected){
             Serial.println(F("Object detected"));
-        #endif
-        this->sleep_time_millis = SLEEP_AFTER_DETECTION;
-    } else {
-        #ifdef PROXIMITY_SENSOR_DEBUG
+        } else {
             Serial.println(F("No object detected"));
-        #endif
-        this->sleep_time_millis = SLEEP_AFTER_NO_DETECTION;
-    }
+        }
+    #endif
     this->update_next_execution_millis();
     return true;
 }

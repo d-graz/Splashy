@@ -10,8 +10,8 @@
 #include <Arduino.h>
 
 #ifdef DEBUG
-#define TASK_DEBUG ///< Enable fine grained debugging for the Task management operations.
-#define SCHEDULER_DEBUG ///< Enable fine grained debugging for the Scheduler operations.
+//#define TASK_DEBUG ///< Enable fine grained debugging for the Task management operations.
+//#define SCHEDULER_DEBUG ///< Enable fine grained debugging for the Scheduler operations.
 #endif
 
 #define MAX_CONCURRENT_TASKS 5 ///< Maximum number of concurrent tasks.

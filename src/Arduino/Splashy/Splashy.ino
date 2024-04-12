@@ -93,6 +93,19 @@ void setup() {
   servo_controller->home(true);
   handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
 
+  //testing servo motors if test
+  #ifdef DEBUG
+    #ifdef TEST
+      Serial.println(F("Testing servo motors"));
+      handle_error(servo_controller->load_animation(ServoMotorAnimation::Test), F("Failed to load test animation for servocontroller"));
+      while(servo_controller->get_status() != TaskStatus::HIBERNATED){
+        handle_error(scheduler->executeAll(), F("Failed to execute the scheduler"));
+      }
+      Serial.println(F("Test done"));
+      Serial.println(F("Continuing the boot process"));
+    #endif
+  #endif
+
   //init the ultrasonic sensor
   #ifdef DEBUG
     #ifdef TEST
@@ -152,7 +165,6 @@ void setup() {
 
   //load the idle animation facial expression
   handle_error(led_matrix->load_animation(LedMatrixAnimation::Idle), F("Failed to load idle animation"));
-  //TODO: [EXTERN] servo motor animation for idle ?
 
   #ifdef DEBUG
     Serial.println(F("Setup done"));

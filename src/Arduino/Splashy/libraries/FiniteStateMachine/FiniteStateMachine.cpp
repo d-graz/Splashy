@@ -1,81 +1,143 @@
 #include "FiniteStateMachine.hpp"
 
+//TODO: [CONFIG] set all theese parameters
 #define ATTRACTION_TIME 30000 ///< The time in milliseconds to spend in the attract state.
-#define SADNESS_TIME 300000 ///< The time in milliseconds to show the sad face of the penguin if not being used in idle mode.
+#define ATTRACTION_STATE_ACTIVATION_TIME 120000 ///< The time that needs to pass before the penguin enters the attract state from idle state.
 
-/**
- * If the ultrasonic sensor detects a water bottle, the state machine transitions to the Filling state.
- * Else If the proximity sensor detects a person, the state machine transitions to the Attract state.
- * Otherwise, the state machine remains in the Idle state.
-*/
-State idle(unsigned int state_entering_time) {
+#define SADNESS_TIME 300000 ///< The time in milliseconds to show the sad face of the penguin if not being used in idle mode.
+#define SADNESS_BACK_TO_IDLE_TIME 25000 ///< The time in milliseconds to show the sad face of the penguin if not being used in idle mode.
+
+#define HAPPY_STATE_ACTIVATION_TIME 10000 ///< The time that needs to pass before the penguin enters the happy state from idle state. 
+#define RECHARGE_COUNT_THRESHOLD 10 ///< The number of times the penguin needs to be recharged before entering the happy state.
+byte recharge_count = 0; ///< The number of times the penguin has been recharged.
+
+
+State idle(unsigned long int state_entering_time) {
     #ifdef FINITE_STATE_MACHINE_DEBUG
-    Serial.println(F("Currently in IDLE"));
+        Serial.println(F("Currently in IDLE"));
     #endif
     if(ultrasonic_sensor->is_water_bottle_detected()){
         #ifdef FINITE_STATE_MACHINE_DEBUG
-        Serial.println(F("Bottle detected"));
-        Serial.println(F("Transitioning to FILLING"));
+            Serial.println(F("Bottle detected"));
+            Serial.println(F("Transitioning to FILLING"));
         #endif
         return State::FILLING;
-    } else if (proximity_sensor->is_person_detected()){
+    } else if (recharge_count >= RECHARGE_COUNT_THRESHOLD && millis() > state_entering_time + HAPPY_STATE_ACTIVATION_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
-        Serial.println(F("Person detected"));
-        Serial.println(F("Transitioning to ATTRACT"));
+            Serial.println(F("People are actually using me!"));
+            Serial.println(F("Transitioning to HAPPY"));
+        #endif
+        return State::HAPPY;
+    } else if (proximity_sensor->is_person_detected() && millis() > state_entering_time + ATTRACTION_STATE_ACTIVATION_TIME){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Person detected"));
+            Serial.println(F("Transitioning to ATTRACT"));
         #endif
         return State::ATTRACT;
     } else if(millis() > state_entering_time + SADNESS_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
-        Serial.println(F("Time to show sad face"));
+            Serial.println(F("Nobody loves me"));
         #endif
-        led_matrix->load_animation(LedMatrixAnimation::Sad);
+        return State::SAD;
     }
     //TODO: [CRITICAL] Add the condition for petting state
     return State::IDLE;
 }
 
-State attract(unsigned int state_entering_time){
+State attract(unsigned long int state_entering_time){
     #ifdef FINITE_STATE_MACHINE_DEBUG
-    Serial.println(F("Currently in ATTRACT"));
+        Serial.println(F("Currently in ATTRACT"));
     #endif
     if (ultrasonic_sensor->is_water_bottle_detected()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Bottle detected"));
+        #endif
         return State::FILLING;
     } else if (millis() - state_entering_time > ATTRACTION_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
-        Serial.println(F("Time to leave ATTRACT"));
+            Serial.println(F("Time to leave ATTRACT"));
         #endif
         return State::IDLE;
     }
-    
     //TODO: [CRITICAL] Add the condition for petting state (evaluate if this is necessary)
     return State::ATTRACT;
 }
 
-State filling(unsigned int state_entering_time){
+State filling(unsigned long int state_entering_time){
+    #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Currently in FILLING"));
+    #endif
     if(!ultrasonic_sensor->is_water_bottle_detected() && pump->is_pump_active()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Bottle removed while charging"));
+        #endif
         pump->hibernate();
         return State::FILLED;
     } else if (!pump->is_pump_active()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Pump has filled the bottle"));
+        #endif
         return State::FILLED;
     }
     return State::FILLING;
 }
 
-State filled(unsigned int state_entering_time){
+State filled(unsigned long int state_entering_time){
+    #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Currently in FILLED"));
+    #endif
     if(!ultrasonic_sensor->is_water_bottle_detected()){
         #ifdef FINITE_STATE_MACHINE_DEBUG
-        Serial.println(F("Bottle removed"));
+            Serial.println(F("Bottle removed"));
         #endif
         return State::IDLE;
     }
-    #ifdef FINITE_STATE_MACHINE_DEBUG
-    Serial.println(F("Waiting for the user to remove his/her bottle"));
-    #endif
     return State::FILLED;
 }
 
-State petting(unsigned int state_entering_time){
+State petting(unsigned long int state_entering_time){
     return State::PETTING;
+}
+
+State sad(unsigned long int state_entering_time){
+    #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Currently in SAD"));
+    #endif
+    if (ultrasonic_sensor->is_water_bottle_detected()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Bottle detected"));
+        #endif
+        return State::FILLING;
+    } else if (proximity_sensor->is_person_detected()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Person detected"));
+        #endif
+        return State::ATTRACT;
+    } else if (millis() >= state_entering_time + SADNESS_BACK_TO_IDLE_TIME){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Time to leave SAD"));
+        #endif
+        return State::IDLE;
+    }
+    return State::SAD;
+}
+
+State happy(unsigned long int state_entering_time){
+    #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Currently in HAPPY"));
+    #endif
+    if (ultrasonic_sensor->is_water_bottle_detected()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Bottle detected"));
+        #endif
+        return State::FILLING;
+    } else if ((servo_controller->get_status() == TaskStatus::HIBERNATED) && (led_matrix->get_status() == TaskStatus::HIBERNATED)){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Finished happy animation"));
+        #endif
+        return State::IDLE;
+    }
+    return State::HAPPY;
 }
 
 FiniteStateMachine::FiniteStateMachine() {
@@ -94,12 +156,13 @@ void FiniteStateMachine::next() {
 
 /**
  * Activates the proximity sensor in order to detect persons
+ * stops the servo motor
  * homes the servo motor
  * Loads the idle animation on the led matrix
- * //TODO: [EXTERN] servo motor animation for idle ?
 */
 void to_Idle_state(){
     handle_error(proximity_sensor->activate(), F("Failed to activate proximity sensor"));
+    servo_controller->hibernate();
     servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Idle), F("Failed to load idle animation"));
 }
@@ -129,16 +192,42 @@ void to_Filling_state(){
     servo_controller->hibernate();
     servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Refill), F("Error loading refill animation"));
-    handle_error(pump->activate(), F("Error activating pump in IDLE state"));
+    handle_error(pump->activate(), F("Error activating pump to start filling process"));
     pump->activate_pump();
 }
 
 /**
  * Load the filled animation on the led matrix
- * //TODO: [EXTERN] servo motor animation for filled ?
+ * Increments the recharge count
 */
 void to_Filled_state(){
+    recharge_count++;
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Filled), F("Error loading filled animation"));
 }
 
 void to_Petting_state(){};
+
+/**
+ * Set the strike back to 0
+ * Hibernates the proximity sensor
+ * Homes the servo motor (REDUNDANT)
+ * Loads the happy animation on the led matrix
+ * Loads the happy animation on the servo motor
+*/
+void to_Happy_state(){
+    recharge_count = 0;
+    proximity_sensor->hibernate();
+    //servo_controller->home(false);
+    handle_error(led_matrix->load_animation(LedMatrixAnimation::HappyLed), F("Error loading happy animation"));
+    handle_error(servo_controller->load_animation(ServoMotorAnimation::HappyMotor), F("Error loading happy animation"));
+}
+
+/**
+ * Load the sad animation on the led matrix
+ * Set the strike back to 0
+*/
+void to_Sad_state(){
+    handle_error(led_matrix->load_animation(LedMatrixAnimation::Sad), F("Error loading sad animation"));
+    recharge_count = 0;
+}
+    

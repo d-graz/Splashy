@@ -56,9 +56,13 @@ void Task::hibernate(){
 bool Task::activate(){
     if(this->status == TaskStatus::HIBERNATED){
         this->status = TaskStatus::WAITING;
-        return true;
     }
-    return false;
+    #ifdef DEBUG
+        #ifdef WARN
+            Serial.println(F("[WARN] Task is already active"));
+        #endif
+    #endif
+    return true;
 }
 
 const char* Task::get_name(){

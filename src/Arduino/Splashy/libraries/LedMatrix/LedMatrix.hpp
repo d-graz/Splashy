@@ -22,11 +22,10 @@
 #define LED_MATRIX_DEVICES_COUNT 2 ///< The number of devices in the LED matrix.
 #define DEFAULT_BRIGHTNESS 8 ///< The default brightness of the LED matrix.
 #define ANIMATION_LINE_LENGTH 11 ///< The length of each line in the animation file.
-//TODO: [EXTERN] create a fill.txt animation for the heart that should be displayed when the splashy is refilling
-//TODO: [EXTERN] create an idle.txt animation for idle state
+//FIXME: [EXTERN] adjust idle animation to have a blinking eye
 //TODO: [EXTERN] create an att.txt animation for attract state
 //TODO: [EXTERN] create a sad.txt animation for sad face in idle state
-//TODO: [EXTERN] create a fed.txt animation for filled state
+//TODO: [EXTERN] create a hap.txt animation for happy face in idle state
 /**
  * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
@@ -40,6 +39,7 @@ enum LedMatrixAnimation{
     Attract, ///< Attract animation.
     Sad, ///< Sad animation.
     Filled, ///< Filled animation.
+    HappyLed, ///< Happy animation.
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
@@ -66,7 +66,8 @@ const LedMatrixAnimationAttributes _led_matrix_animations[AnimationCount] = {
     {"an/idle.txt", 0},
     {"an/att.txt", 0},
     {"an/sad.txt", 0},
-    {"an/fed.txt", 0}
+    {"an/fed.txt", 0},
+    {"an/hap.txt", 15}
 };
 
 /**
