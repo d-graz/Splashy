@@ -2,6 +2,7 @@ import serial
 import serial.tools.list_ports
 import time
 import threading
+import sys
 
 class SerialManager:
     def __init__(self, database_connection_manager, nfc_manager):
@@ -22,10 +23,16 @@ class SerialManager:
     
     def read_from_arduino(self):
         while True:
-            if self.connection and self.connection.in_waiting > 0:
+            if self.connection and self.connection.in_waiting >= 4:
                 data = self.connection.readline().decode('utf-8').strip()
                 print(f"Received: {data}")
-                #TODO: data should be added to the database (and should be an float value)
+                try:
+                    quantity = float(data)
+                except ValueError:
+                    print("Invalid data received from arduino")
+                    sys.exit(1)
+                id, text = self.db.get_token_data()
+                self.db.updateDB(id, text, quantity)
             time.sleep(0.5)
 
     def start_reading(self):
