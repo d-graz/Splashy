@@ -15,7 +15,7 @@ class SerialManager:
     def find_and_connect_arduino(self):
         ports = list(serial.tools.list_ports.comports())
         for p in ports:
-            if "Arduino" in p.description:
+            if p.device.startswith("/dev/ttyACM") or p.device.startswith("/dev/ttyUSB"):
                 self.connection = serial.Serial(p.device, self.baud_rate)
                 print(f"Connected to Arduino on {p.device}")
                 return
@@ -31,7 +31,7 @@ class SerialManager:
                 except ValueError:
                     print("Invalid data received from arduino")
                     sys.exit(1)
-                id, text = self.db.get_token_data()
+                id, text = self.nfc.get_token_data()
                 self.db.updateDB(id, text, quantity)
             time.sleep(0.5)
 

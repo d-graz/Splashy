@@ -4,7 +4,7 @@ import sys
 import threading
 
 __database_name__ = "splashy"
-__table_name__ = "your_table"
+__table_name__ = "splashy_table"
 
 class DatabaseConnectionManager:
     def __init__(self):
@@ -12,7 +12,7 @@ class DatabaseConnectionManager:
             self.db = mysql.connector.connect(
                 host="localhost",
                 user="root",
-                passwd="root",
+                passwd="splashy_group_3",
                 database=__database_name__
             )
             if self.db.is_connected():
@@ -25,7 +25,7 @@ class DatabaseConnectionManager:
     def getTopK(self, k):
         with self.lock:
             cursor = self.db.cursor()
-            select_query = f"SELECT name FROM {__table_name__} ORDER BY quantity DESC LIMIT %s"
+            select_query = f"SELECT name FROM {__table_name__} WHERE id != 'None' ORDER BY quantity DESC LIMIT %s"
             cursor.execute(select_query, (k,))
             rows = cursor.fetchall()
             return [row[0] for row in rows]

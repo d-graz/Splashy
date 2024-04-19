@@ -1,11 +1,11 @@
 from DatabaseConnectionManager import DatabaseConnectionManager
-from NFCReader import NFCReader
+from NFCReader import RFIDReader
 from SerialManager import SerialManager
 import time
 
 if __name__ == "__main__":
     db = DatabaseConnectionManager()
-    nfc = NFCReader()
+    nfc = RFIDReader()
     nfc.start_reading()
     serial = SerialManager(db, nfc)
     serial.start_reading()
