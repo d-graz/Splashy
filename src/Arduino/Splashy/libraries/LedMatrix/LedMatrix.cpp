@@ -106,8 +106,8 @@ bool LedMatrix::next(){
         #ifdef WARN
             if(this->status ==  TaskStatus::DEAD or this->status == TaskStatus::WAITING){
             Serial.println(F("[WARN] : called next() on a dead or waiting task"));
-            Serial.println("Generated exception in LedMatrix::next()");
-        }
+            Serial.println(F("Generated exception in LedMatrix::next()"));
+            }
         #endif
     #endif
     if(this->frame_count != 0){

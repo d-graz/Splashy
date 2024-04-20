@@ -11,6 +11,7 @@
 #include "../ProximitySensor/ProximitySensor.hpp"
 #include "../UltrasonicSensor/UltrasonicSensor.hpp"
 #include "../Pump/Pump.hpp"
+#include "../TouchSensor/TouchSensor.hpp"
 
 // led matrix object
 LedMatrix *led_matrix;
@@ -26,5 +27,8 @@ UltrasonicSensor *ultrasonic_sensor;
 
 // pump
 Pump *pump;
+
+// touch sensor
+TouchSensor *touch_sensor;
 
 #endif

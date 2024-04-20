@@ -40,6 +40,7 @@ enum LedMatrixAnimation{
     Sad, ///< Sad animation.
     Filled, ///< Filled animation.
     HappyLed, ///< Happy animation.
+    PettingLed, ///< Petting animation.
     AnimationCount ///< Total number of animations. Always keep this as the last element.
 };
 
@@ -67,7 +68,8 @@ const LedMatrixAnimationAttributes _led_matrix_animations[AnimationCount] = {
     {"an/att.txt", 0},
     {"an/sad.txt", 0},
     {"an/fed.txt", 0},
-    {"an/hap.txt", 15}
+    {"an/hap.txt", 15},
+    {"an/pet.txt", 0}
 };
 
 /**

@@ -52,6 +52,7 @@ enum ServoMotorAnimation {
     Hi, ///< Represents a "Hi" animation.
     Test, ///< Represents a "Test" animation.
     HappyMotor, ///< Represents a "Happy" animation.
+    PettingMotor, ///< Represents a "Petting" animation.
     ServoMotorAnimationCount ///< The total count of animations. Always keep this as the last element.
 };
 
@@ -77,7 +78,8 @@ struct ServoMotorAnimationAttributes {
 const ServoMotorAnimationAttributes _servo_motor_animations[ServoMotorAnimationCount] = {
     {"mtr/hi.txt", 0}, ///< The attributes for the "Hi" animation.
     {"mtr/tst.txt", 10}, ///< The attributes for the "Test" animation.
-    {"mtr/hap.txt", 10} ///< The attributes for the "Happy" animation.
+    {"mtr/hap.txt", 10}, ///< The attributes for the "Happy" animation.
+    {"mtr/pet.txt", 0} ///< The attributes for the "Petting" animation.
 };
 
 /**

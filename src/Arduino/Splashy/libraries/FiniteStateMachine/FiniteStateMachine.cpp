@@ -11,6 +11,8 @@
 #define RECHARGE_COUNT_THRESHOLD 10 ///< The number of times the penguin needs to be recharged before entering the happy state.
 byte recharge_count = 0; ///< The number of times the penguin has been recharged.
 
+#define PETTING_TIME 60000 ///< The time in milliseconds to spend in the petting state.
+
 
 State idle(unsigned long int state_entering_time) {
     #ifdef FINITE_STATE_MACHINE_DEBUG
@@ -34,13 +36,18 @@ State idle(unsigned long int state_entering_time) {
             Serial.println(F("Transitioning to ATTRACT"));
         #endif
         return State::ATTRACT;
+    } else if (touch_sensor->is_active()) {
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Petting detected"));
+            Serial.println(F("Transitioning to PETTING"));
+        #endif
+        return State::PETTING;
     } else if(millis() > state_entering_time + SADNESS_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Nobody loves me"));
         #endif
         return State::SAD;
     }
-    //TODO: [CRITICAL] Add the condition for petting state
     return State::IDLE;
 }
 
@@ -53,13 +60,17 @@ State attract(unsigned long int state_entering_time){
             Serial.println(F("Bottle detected"));
         #endif
         return State::FILLING;
+    } else if (touch_sensor->is_active()) {
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Petting detected"));
+        #endif
+        return State::PETTING;
     } else if (millis() - state_entering_time > ATTRACTION_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Time to leave ATTRACT"));
         #endif
         return State::IDLE;
     }
-    //TODO: [CRITICAL] Add the condition for petting state (evaluate if this is necessary)
     return State::ATTRACT;
 }
 
@@ -96,6 +107,20 @@ State filled(unsigned long int state_entering_time){
 }
 
 State petting(unsigned long int state_entering_time){
+    #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Currently in PETTING"));
+    #endif
+    if (ultrasonic_sensor->is_water_bottle_detected()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Bottle detected"));
+        #endif
+        return State::FILLING;
+    } else if (millis() > state_entering_time + PETTING_TIME){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("End of pet time"));
+        #endif
+        return State::IDLE;
+    }
     return State::PETTING;
 }
 
@@ -156,12 +181,14 @@ void FiniteStateMachine::next() {
 
 /**
  * Activates the proximity sensor in order to detect persons
+ * Activates the touch sensor in order to detect petting
  * stops the servo motor
  * homes the servo motor
  * Loads the idle animation on the led matrix
 */
 void to_Idle_state(){
     handle_error(proximity_sensor->activate(), F("Failed to activate proximity sensor"));
+    handle_error(touch_sensor->activate(), F("Failed to activate touch sensor"));
     servo_controller->hibernate();
     servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Idle), F("Failed to load idle animation"));
@@ -181,7 +208,7 @@ void to_Attract_state(){
 }
 
 /**
- * Stops the proximity sensor and servo controller (frees up cpu cycles)
+ * Stops the proximity sensor, servo controller and touch sensor (frees up cpu cycles)
  * Homes the servo motor
  * Loads the refill animation on the led matrix
  * Activates the pump (inserts it into the sceduler)
@@ -190,6 +217,7 @@ void to_Attract_state(){
 void to_Filling_state(){
     proximity_sensor->hibernate();
     servo_controller->hibernate();
+    touch_sensor->hibernate();
     servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Refill), F("Error loading refill animation"));
     handle_error(pump->activate(), F("Error activating pump to start filling process"));
@@ -205,7 +233,20 @@ void to_Filled_state(){
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Filled), F("Error loading filled animation"));
 }
 
-void to_Petting_state(){};
+/**
+ * Hibernates the proximity sensor and touch sensor
+ * Homes the servo motor
+ * Loads the petting animation on the led matrix
+ * Loads the petting animation on the servo motor
+*/
+void to_Petting_state(){
+    proximity_sensor->hibernate();
+    touch_sensor->hibernate();
+    servo_controller->home(false);
+    handle_error(led_matrix->load_animation(LedMatrixAnimation::PettingLed), F("Error loading petting animation"));
+    handle_error(servo_controller->load_animation(ServoMotorAnimation::PettingMotor), F("Error loading petting animation"));
+
+}
 
 /**
  * Set the strike back to 0

@@ -142,6 +142,18 @@ void setup() {
   handle_error(scheduler->add_task(pump), F("Failed to add Pump to the scheduler"));
   handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
 
+  //init the touch sensor
+  #ifdef DEBUG
+    #ifdef TEST
+      delay(1000);
+    #endif
+    Serial.println(F("Init TouchSensor and adding to the scheduler"));
+  #endif
+  touch_sensor = new TouchSensor("Touch");
+  handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
+  handle_error(scheduler->add_task(touch_sensor), F("Failed to add TouchSensor to the scheduler"));
+  handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
+
   //init the fsm
   #ifdef DEBUG
     #ifdef TEST
@@ -152,7 +164,7 @@ void setup() {
   fsm = new FiniteStateMachine();
   handle_error(scheduler->executeByName(F("Led"), 2), F("Failed to execute LedMatrix"));
 
-  // activating proximity sensor and ultrasonic sensor before entering the loop in IDLE status
+  // activating proximity sensor, ultrasonic sensor and proximity before entering the loop in IDLE status
   #ifdef DEBUG
     #ifdef TEST
       delay(1000);
@@ -161,7 +173,8 @@ void setup() {
   #endif
   handle_error(proximity_sensor->activate(), F("Failed to activate proximity sensor"));
   handle_error(ultrasonic_sensor->activate(), F("Failed to activate ultrasonic sensor"));
-  handle_error(scheduler->executeByName(F("Led"), 2), F("Failed to execute LedMatrix"));
+  handle_error(touch_sensor->activate(), F("Failed to activate touch sensor"));
+  handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
 
   //load the idle animation facial expression
   handle_error(led_matrix->load_animation(LedMatrixAnimation::Idle), F("Failed to load idle animation"));

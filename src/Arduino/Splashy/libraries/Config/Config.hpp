@@ -35,4 +35,8 @@
 // pump pin
 #define PUMP_PIN 29
 
+// touch sensor pin
+#define TOUCH_SENSOR_PIN_SEND 30 // digital pin
+#define TOUCH_SENSOR_PIN_RECIVE 31 // PWM pin
+
 #endif
