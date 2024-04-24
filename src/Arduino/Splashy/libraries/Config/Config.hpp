@@ -27,7 +27,7 @@
 #define ULTRASONIC_SENSOR_ECHO_PIN 27
 
 // flow sensor pins
-#define FLOW_SENSOR_PIN 28
+#define FLOW_SENSOR_PIN 19
 
 // potentiometer pin
 #define POTENTIOMETER_PIN A3
@@ -37,6 +37,6 @@
 
 // touch sensor pin
 #define TOUCH_SENSOR_PIN_SEND 30 // digital pin
-#define TOUCH_SENSOR_PIN_RECIVE 31 // PWM pin
+#define TOUCH_SENSOR_PIN_RECIVE 9 // PWM pin
 
 #endif

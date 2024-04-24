@@ -92,6 +92,8 @@ bool Pump::next(){
     interrupts();
     this->water_dispensed += quantity_dispensed;
     #ifdef PUMP_DEBUG
+        Serial.print(F("pulse count in this period: "));
+        Serial.println(_pulse_count);
         Serial.print(F("Water dispensed: "));
         Serial.println(this->water_dispensed);
     #endif
