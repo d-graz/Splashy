@@ -14,7 +14,7 @@
 //#define SCHEDULER_DEBUG ///< Enable fine grained debugging for the Scheduler operations.
 #endif
 
-#define MAX_CONCURRENT_TASKS 5 ///< Maximum number of concurrent tasks.
+#define MAX_CONCURRENT_TASKS 6 ///< Maximum number of concurrent tasks.
 
 #define TASK_NAME_LENGTH 10 ///< Maximum length of a task name.
 

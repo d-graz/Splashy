@@ -5,7 +5,7 @@
 
 #define DEBUG
 //#define WARN
-#define TEST 
+//#define TEST 
 // debug libraries
 #include "libraries/LedMatrix/LedMatrix.hpp"
 #include "libraries/LedMatrix/LedMatrix.cpp"
@@ -23,6 +23,8 @@
 #include "libraries/FiniteStateMachine/FiniteStateMachine.cpp"
 #include "libraries/Pump/Pump.hpp"
 #include "libraries/Pump/Pump.cpp"
+#include "libraries/TouchSensor/TouchSensor.hpp"
+#include "libraries/TouchSensor/TouchSensor.cpp"
 #include "libraries/Config/Global.hpp"
 #include "libraries/Core/Core.hpp"
 #include "libraries/Core/Core.cpp"
