@@ -1,7 +1,7 @@
 /**
  * @file UltrasonicSensor.hpp
  * @brief Header file for the UltrasonicSensor class.
- * @version 1.1
+ * @version 1.2
  */
 
 #ifndef __ULTRASONICSENSOR__
@@ -15,7 +15,7 @@
 //#define ULTRASONIC_SENSOR_DEBUG
 #endif
 
-#define SLEEP_TIME 50 ///< Time to sleep after not detecting an object.
+#define SLEEP_TIME 30 ///< Time to sleep after not detecting an object.
 #define TRIGGERING_DISTANCE 3 ///< Distance in cm that triggers the ultrasonic sensor.
 #define MAX_DISTANCE 15 ///< Maximum distance in cm that the ultrasonic sensor can detect.
 #define FILTER_SIZE 9 ///< Size of the filter to smooth the distance readings.

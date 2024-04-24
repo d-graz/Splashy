@@ -37,6 +37,7 @@ bool UltrasonicSensor::next(){
     #endif
     for(byte i = 0; i < FILTER_UPDATE_SIZE; i++){
         this->filter[this->filter_index] = this->read_distance();
+        delay(10);
         this->filter_index = (this->filter_index + 1) % FILTER_SIZE;
     }
     #ifdef ULTRASONIC_SENSOR_DEBUG
