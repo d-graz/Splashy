@@ -11,10 +11,11 @@
 #include "../TaskManagement/TaskManagement.hpp"
 
 #ifdef DEBUG
-#define PROXIMITY_SENSOR_DEBUG
-#define PROXIMITY_SENSOR_SIMULATION
+//#define PROXIMITY_SENSOR_DEBUG
+//#define PROXIMITY_SENSOR_SIMULATION
 #endif
 
+//TODO: [TEST] see if 3000 ms is ok
 #define SLEEP_TIME 3000 ///< Time to sleep (Minumum 3s, hardware imposed).
 
 /**

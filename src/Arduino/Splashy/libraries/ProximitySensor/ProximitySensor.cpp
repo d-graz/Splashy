@@ -34,9 +34,9 @@ bool ProximitySensor::next(){
     #endif
     #ifdef PROXIMITY_SENSOR_DEBUG
         if(this->object_detected){
-            Serial.println(F("Object detected"));
+            Serial.println(F("Movement detected"));
         } else {
-            Serial.println(F("No object detected"));
+            Serial.println(F("No movement detected"));
         }
     #endif
     this->update_next_execution_millis();

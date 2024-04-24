@@ -3,8 +3,7 @@
  * @brief Header file for the ServoController class.
  * @version 2.5.2
  */
-//TODO: [EXTERN] create a hi.txt animation for attract state
-//TODO: [EXTERN] create an hap.txt animation for happy state
+
 #include <Arduino.h>
 #include <Servo.h>
 #include "../Config/Config.hpp"
@@ -22,6 +21,8 @@
 #define MAX_EXECUTION_TIME 300 ///< Maximum execution time in milliseconds.
 #define ANIMATION_LINE_LENGTH 70 ///< Length of animation line.
 
+//TODO:[SETUP] set the home position for servos
+//TODO: [SETUP] set the animation for the servos (with placeholder values)
 #define LEFT_WING_HOME_POSITION 90 ///< Home position for the left wing.
 #define RIGHT_WING_HOME_POSITION 90 ///< Home position for the right wing.
 #define HEAD_HOME_POSITION 90 ///< Home position for the head.

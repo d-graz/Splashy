@@ -18,14 +18,13 @@
 //#define LEDMATRIX_DEBUG // Uncomment this line to enable fine grained debugging for the LED matrix operations.
 #endif
 
+//TODO: [SETUP] set the brightness for the LED matrix
+//TODO: [SETUP] set the animation for the LED matrix.
 #define MATRIX_SIZE 8 ///< The size of the LED matrix.
 #define LED_MATRIX_DEVICES_COUNT 2 ///< The number of devices in the LED matrix.
 #define DEFAULT_BRIGHTNESS 8 ///< The default brightness of the LED matrix.
 #define ANIMATION_LINE_LENGTH 11 ///< The length of each line in the animation file.
-//FIXME: [EXTERN] adjust idle animation to have a blinking eye
-//TODO: [EXTERN] create an att.txt animation for attract state
-//TODO: [EXTERN] create a sad.txt animation for sad face in idle state
-//TODO: [EXTERN] create a hap.txt animation for happy face in idle state
+
 /**
  * @enum LedMatrixAnimation
  * @brief Enumerations for the different types of animations.
