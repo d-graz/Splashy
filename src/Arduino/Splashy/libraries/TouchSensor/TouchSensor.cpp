@@ -24,6 +24,7 @@ bool TouchSensor::next() {
     #endif
     for(byte i = 0; i < FILTER_UPDATE_SIZE_TS; i++){
         this->samples[this->index] = this->sensor.capacitiveSensor(SAMPLES);
+        delay(10);
         #ifdef TOUCH_SENSOR_DEBUG
             Serial.print(F("Touch Sensor value: "));
             Serial.println(this->samples[this->index]);

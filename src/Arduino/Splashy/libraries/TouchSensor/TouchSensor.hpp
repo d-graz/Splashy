@@ -1,7 +1,7 @@
 /**
  * @file TouchSensor.hpp
  * @brief This file contains the declaration of the TouchSensor class.
- * @version 1.1
+ * @version 1.1.1
 */
 #ifndef __TOUCH_SENSOR__
 #define __TOUCH_SENSOR__

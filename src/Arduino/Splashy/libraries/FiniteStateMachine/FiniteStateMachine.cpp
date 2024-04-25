@@ -1,17 +1,13 @@
 #include "FiniteStateMachine.hpp"
 
-//TODO: [CONFIG] set all theese parameters
-#define ATTRACTION_TIME 30000 ///< The time in milliseconds to spend in the attract state.
-#define ATTRACTION_STATE_ACTIVATION_TIME 120000 ///< The time that needs to pass before the penguin enters the attract state from idle state.
-
-#define SADNESS_TIME 300000 ///< The time in milliseconds to show the sad face of the penguin if not being used in idle mode.
-#define SADNESS_BACK_TO_IDLE_TIME 25000 ///< The time in milliseconds to show the sad face of the penguin if not being used in idle mode.
-
-#define HAPPY_STATE_ACTIVATION_TIME 10000 ///< The time that needs to pass before the penguin enters the happy state from idle state. 
-#define RECHARGE_COUNT_THRESHOLD 10 ///< The number of times the penguin needs to be recharged before entering the happy state.
+#define ATTRACTION_TIME 30000 ///< The time in milliseconds to spend in the attract state. If no one interacts with the penguin, it will go to the sad state.
+#define ATTRACTION_STATE_ACTIVATION_TIME 120000 ///< The time that needs to pass before the penguin enters the attract state from idle state. This is to ensure no interruption of service during heavy utilization.
+#define SADNESS_TIME 10000 ///< The time in milliseconds to remain in the sad state.
+#define HAPPY_STATE_ACTIVATION_TIME 10000 ///< The time that needs to pass before the penguin enters the happy state from idle state.
+#define HAPPY_TIME 20000 ///< The time in milliseconds to remain in the happy state. 
+#define RECHARGE_COUNT_THRESHOLD 5 ///< The number of times the penguin needs to be recharged before entering the happy state.
 byte recharge_count = 0; ///< The number of times the penguin has been recharged.
-
-#define PETTING_TIME 60000 ///< The time in milliseconds to spend in the petting state.
+#define PETTING_TIME 15000 ///< The time in milliseconds to spend in the petting state.
 
 
 State idle(unsigned long int state_entering_time) {
@@ -42,11 +38,6 @@ State idle(unsigned long int state_entering_time) {
             Serial.println(F("Transitioning to PETTING"));
         #endif
         return State::PETTING;
-    } else if(millis() > state_entering_time + SADNESS_TIME){
-        #ifdef FINITE_STATE_MACHINE_DEBUG
-            Serial.println(F("Nobody loves me"));
-        #endif
-        return State::SAD;
     }
     return State::IDLE;
 }
@@ -68,8 +59,9 @@ State attract(unsigned long int state_entering_time){
     } else if (millis() - state_entering_time > ATTRACTION_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Time to leave ATTRACT"));
+            Serial.println(F("Transitioning to SAD"));
         #endif
-        return State::IDLE;
+        return State::SAD;
     }
     return State::ATTRACT;
 }
@@ -133,12 +125,12 @@ State sad(unsigned long int state_entering_time){
             Serial.println(F("Bottle detected"));
         #endif
         return State::FILLING;
-    } else if (proximity_sensor->is_person_detected()){
-        #ifdef FINITE_STATE_MACHINE_DEBUG
-            Serial.println(F("Person detected"));
+    } else if (touch_sensor->is_active()){
+         #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Petting detected"));
         #endif
-        return State::ATTRACT;
-    } else if (millis() >= state_entering_time + SADNESS_BACK_TO_IDLE_TIME){
+        return State::PETTING;
+    } else if (millis() >= state_entering_time + SADNESS_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Time to leave SAD"));
         #endif
@@ -156,9 +148,9 @@ State happy(unsigned long int state_entering_time){
             Serial.println(F("Bottle detected"));
         #endif
         return State::FILLING;
-    } else if ((servo_controller->get_status() == TaskStatus::HIBERNATED) && (led_matrix->get_status() == TaskStatus::HIBERNATED)){
+    } else if (millis() >= state_entering_time + HAPPY_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
-            Serial.println(F("Finished happy animation"));
+            Serial.println(F("Time to leave HAPPY"));
         #endif
         return State::IDLE;
     }
@@ -196,13 +188,13 @@ void to_Idle_state(){
 
 /**
  * Hibernates the proximity sensor as it's not required in this state an frees up cpu cycles
- * Homes the servo motor
+ * Homes the servo motor (REDUNDANT)
  * Loads the attract animation on the led matrix
  * Loads the hi animation on the servo motor
 */
 void to_Attract_state(){
     proximity_sensor->hibernate();
-    servo_controller->home(false);
+    //servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Attract), F("Error loading Attract animation"));
     handle_error(servo_controller->load_animation(ServoMotorAnimation::Hi), F("Error loading Hi animation"));
 }
@@ -234,12 +226,14 @@ void to_Filled_state(){
 }
 
 /**
+ * Stops the servo motor from previous movement
  * Hibernates the proximity sensor and touch sensor
  * Homes the servo motor
  * Loads the petting animation on the led matrix
  * Loads the petting animation on the servo motor
 */
 void to_Petting_state(){
+    servo_controller->hibernate();
     proximity_sensor->hibernate();
     touch_sensor->hibernate();
     servo_controller->home(false);
@@ -251,6 +245,7 @@ void to_Petting_state(){
 /**
  * Set the strike back to 0
  * Hibernates the proximity sensor
+ * Hibernate the touch sensor
  * Homes the servo motor (REDUNDANT)
  * Loads the happy animation on the led matrix
  * Loads the happy animation on the servo motor
@@ -258,16 +253,20 @@ void to_Petting_state(){
 void to_Happy_state(){
     recharge_count = 0;
     proximity_sensor->hibernate();
+    touch_sensor->hibernate();
     //servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::HappyLed), F("Error loading happy animation"));
     handle_error(servo_controller->load_animation(ServoMotorAnimation::HappyMotor), F("Error loading happy animation"));
 }
 
 /**
+ * Stop the servo motors
  * Load the sad animation on the led matrix
  * Set the strike back to 0
 */
 void to_Sad_state(){
+    servo_controller->hibernate();
+    servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Sad), F("Error loading sad animation"));
     recharge_count = 0;
 }
