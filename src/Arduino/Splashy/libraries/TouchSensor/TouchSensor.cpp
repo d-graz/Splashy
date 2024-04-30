@@ -3,7 +3,7 @@
 TouchSensor::TouchSensor(const char* name): Task(name), sensor(TOUCH_SENSOR_PIN_SEND, TOUCH_SENSOR_PIN_RECIVE) {
     this->touch = false;
     // FIXME: [LOW] autocalibration should be used for production-ready code
-    this->sensor.set_CS_AutocaL_Millis(0xFFFFFFFF);
+    //this->sensor.set_CS_AutocaL_Millis(0xFFFFFFFF);
     for (byte i = 0; i < FILTER_SIZE_TS; i++) {
         this->samples[i] = this->sensor.capacitiveSensor(SAMPLES);
     }

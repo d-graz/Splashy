@@ -1,7 +1,7 @@
 /**
  * @file TouchSensor.hpp
  * @brief This file contains the declaration of the TouchSensor class.
- * @version 1.1.1
+ * @version 1.1.2
 */
 #ifndef __TOUCH_SENSOR__
 #define __TOUCH_SENSOR__
@@ -18,8 +18,8 @@
 #define SAMPLES 1500 ///< The number of samples to take when reading the touch sensor.
 #define THRESHOLD 200 ///< The threshold value for the touch sensor to be recognized as active.
 #define SLEEP_TIME 200 ///< The time to sleep between samples in milliseconds.
-#define FILTER_SIZE_TS 4 ///< The size of the filter to use when smoothing the sensor readings.
-#define FILTER_UPDATE_SIZE_TS 2 ///< The number of samples to use when updating the filter.
+#define FILTER_SIZE_TS 9 ///< The size of the filter to use when smoothing the sensor readings.
+#define FILTER_UPDATE_SIZE_TS 3 ///< The number of samples to use when updating the filter.
 
 /**
  * @class TouchSensor
