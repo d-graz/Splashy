@@ -37,3 +37,4 @@ RIGHT_WING mid_up
 RIGHT_WING up
 600
 RIGHT_WING down 
+500
