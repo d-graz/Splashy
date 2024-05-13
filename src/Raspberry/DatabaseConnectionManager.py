@@ -21,14 +21,21 @@ class DatabaseConnectionManager:
         except Error as e:
             print("Error while connecting to MariaDB", e)
             sys.exit(1)
+        self.liters_montly_goal = 5600     # 5600 liters per month is the goal for the water consumption
+        self.water_plasic_ratio = 0.03   # 0.03 kilograms of plastic per liter of water
     
-    def getTopK(self, k):
+    def __getTopK__(self, k):
         with self.lock:
             cursor = self.db.cursor()
-            select_query = f"SELECT name FROM {__table_name__} WHERE id != 'None' ORDER BY quantity DESC LIMIT %s"
+            select_query = f"SELECT name, quantity FROM {__table_name__} WHERE id != 'None' ORDER BY quantity DESC LIMIT %s"
             cursor.execute(select_query, (k,))
             rows = cursor.fetchall()
-            return [row[0] for row in rows]
+            return [(row[0], row[1]) for row in rows]
+        
+    def getTopK(self, k):
+        top_k = self.__getTopK__(k)
+        if len(top_k) < k:
+            top_k += [("None", 0)] * (k - len(top_k))
 
     def updateDB(self, id, name, quantity):
         with self.lock:
@@ -54,6 +61,10 @@ class DatabaseConnectionManager:
             cursor.execute(select_query)
             total_quantity = cursor.fetchone()[0]
             return total_quantity if total_quantity else 0
+        
+    def getPlasticSaved(self):
+        return self.getTotalQuantity() * self.water_plasic_ratio
+    
     
     # To be called once per month
     def deleteTable(self):

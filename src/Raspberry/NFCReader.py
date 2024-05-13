@@ -37,5 +37,12 @@ class RFIDReader:
             text = "default"
         return identification, text
     
+    def get_user(self):
+        with self.lock:
+            # get the read data from the card
+            identification = self.id
+            text = self.text
+        return identification, text
+    
     def start_reading(self):
         threading.Thread(target=self.read_card, daemon=True).start()
