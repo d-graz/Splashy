@@ -1,6 +1,6 @@
 LEFT_WING mid RIGHT_WING mid HEAD center
 500
-LEFT_WING mid_down RIGHT_WING mid_down HEAD mid_right
+LEFT_WING mid_down RIGHT_WING mid_down HEAD mid_left
 200
 LEFT_WING mid RIGHT_WING mid 
 300
