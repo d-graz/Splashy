@@ -19,7 +19,9 @@ from PySide2extn.RoundProgressBar import roundProgressBar
 #   pyuic5 GUIsplashy.ui  -o GUIsplashy.py
 ##########################################################################################################
 class Ui_MainWindowSplashy(object):
-    def setupUi(self, MainWindowSplashy):
+    def setupUi(self, MainWindowSplashy, database_manager, nfc_reader):
+        self.db = database_manager
+        self.nfc = nfc_reader
         MainWindowSplashy.setObjectName("MainWindowSplashy")
         MainWindowSplashy.setEnabled(True)
         MainWindowSplashy.resize(480, 320)
@@ -265,51 +267,36 @@ class Ui_MainWindowSplashy(object):
         self.label_nickname5.setText(_translate("MainWindowSplashy", "Name1"))
         self.labelSplashyWeeklyGoal.setText(_translate("MainWindowSplashy", "TextLabel"))
 
-    #ADDING FUNCTIONALITIES TO THE GUI
-    #########################################################################################################################à
-    # define constant variables value
-
-        splashyWeeklyGoal = 1400 #in liters
-        waterPlasticRatio = 0.2 #kilograms of plastic per liter of water
-
-    # read value from fluxometer and RFID sensor
-        litersErogated = 1 #readFluxometer()
-        userID = 1 #readRFID()
-
-    # update user stats in database
-        #userDailyLiters = userDailyLiters + litersErogated
-        #userTotalLiters = userTotalLiters + litersErogated
-
-    #QUERY NEEDED
-        #firstPlace (nickname, totalLiters)
-        #secondPlace (nickname, totalLiters)
-        #thirdPlace (nickname, totalLiters)
-
-        #current user (nickname, dailyLiters, totalLiters, rankingPosition)  <-given NFC-ID
-        getFromDB = 1
-
+        #ADDING FUNCTIONALITIES TO THE GUI
+        #########################################################################################################################à
     
-    # read values from DataBase ####################################
-        litersOfTheWeek = 1000 
-        plasticSaved = 0
-        plasticSaved = plasticSaved + litersErogated * waterPlasticRatio
+        # read values from database and nfc
+        ## get global information
+        splashyWeeklyGoal = self.db.liters_montly_goal
+        litersOfTheWeek = self.db.getTotalQuantity() 
+        plasticSaved = self.db.getPlasticSaved()
 
-        userNickname = getFromDB
-        userTotalLiters = getFromDB
-        userRankingPosition = getFromDB
+        ## get ranking information
+        top5 = self.db.getTopK(5)
 
-        firstNickname = getFromDB
-        secondNickname = getFromDB
-        thirdNickname = getFromDB
-        fourthNickname = getFromDB
-        fifthNickname = getFromDB
+        firstNickname = top5[0][0]
+        secondNickname = top5[1][0]
+        thirdNickname = top5[2][0]
+        fourthNickname = top5[3][0]
+        fifthNickname = top5[4][0]
 
-        firstTotalLiters = getFromDB
-        secondTotalLiters = getFromDB
-        thirdTotalLiters = getFromDB
-        fourthTotalLiters = getFromDB
-        fifthTotalLiters = getFromDB
+        firstTotalLiters = top5[0][1]
+        secondTotalLiters = top5[1][1]
+        thirdTotalLiters = top5[2][1]
+        fourthTotalLiters = top5[3][1]
+        fifthTotalLiters = top5[4][1]
 
+        ## get current user information
+        identification, text = self.nfc.get_user()
+        quantity, ranking = self.db.get_user_quantity_and_ranking(identification)
+        userNickname = text
+        userTotalLiters = quantity
+        userRankingPosition = ranking
 
         
     # update text of the labels, tables, ecc with the variables value

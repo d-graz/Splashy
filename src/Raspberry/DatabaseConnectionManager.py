@@ -103,3 +103,42 @@ class DatabaseConnectionManager:
             delete_query = f"DELETE FROM {__table_name__}"
             cursor.execute(delete_query)
             self.db.commit()
+
+    ## @private
+    #  @brief Get the quantity of a user given the user's id.
+    #  @param id The id of the user.
+    #  @return The quantity of the user.
+    def __get_user_quantity__(self, id):
+        with self.lock:
+            cursor = self.db.cursor()
+            select_query = f"SELECT quantity FROM {__table_name__} WHERE id = %s"
+            cursor.execute(select_query, (id,))
+            row = cursor.fetchone()
+            return row[0] if row else 0
+        
+    ## @private
+    #  @brief Get the ranking of a user given the user's id.
+    #  @param id The id of the user.
+    #  @return The ranking of the user based on the quantity value.
+    def __get_user_ranking__(self, id):
+        with self.lock:
+            cursor = self.db.cursor()
+            select_query = f"SELECT id, quantity FROM {__table_name__} ORDER BY quantity DESC"
+            cursor.execute(select_query)
+            rows = cursor.fetchall()
+            for rank, row in enumerate(rows, start=1):
+                if row[0] == id:
+                    return rank
+            return None
+        
+    ## @brief Get the quantity and ranking of a user given the user's id.
+    #  @details This method fetches the quantity and ranking of a user from the database.
+    #  If the user is not found, it raises an exception.
+    #  @param id The id of the user.
+    #  @return A tuple containing the quantity and ranking of the user.
+    def get_user_stats(self, id):
+        quantity = self.__get_user_quantity__(id)
+        ranking = self.__get_user_ranking__(id)
+        if ranking is None:
+            raise Exception("User not found")
+        return quantity, ranking
