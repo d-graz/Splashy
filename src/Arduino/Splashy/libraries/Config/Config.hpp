@@ -8,6 +8,10 @@
 
 // configuration for the SD card
 #define SD_CSPIN 7
+// other sd pin not configurable
+// MISO 50
+// MOSI 51
+// SCK 52
 
 // configuration for the LED matrix
 #define LED_MATRIX_DATA_PIN 2
