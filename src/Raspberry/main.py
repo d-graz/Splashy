@@ -1,17 +1,32 @@
 from DatabaseConnectionManager import DatabaseConnectionManager
 from NFCReader import RFIDReader
 from SerialManager import SerialManager
+from PySide6 import QtWidgets
+from GUI import Ui_MainWindowSplashy
 import time
+import sys
 
 if __name__ == "__main__":
+
+    # set up the database connection
     db = DatabaseConnectionManager()
+
+    # set up the nfc module and start reading
     nfc = RFIDReader()
     nfc.start_reading()
+
+    # set up the serial communication with Arduino and start reading
     serial = SerialManager(db, nfc)
     serial.start_reading()
-    while True:
-        time.sleep(60)
-        top5 = db.getTopK(5)
-        total = db.getTotalQuantity()
-        print(f"Top 5 items: {top5}")
-        print(f"Total quantity: {total}")
+
+    # set up the GUI
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindowSplashy = QtWidgets.QMainWindow()
+    ui = Ui_MainWindowSplashy()
+    ui.setupUi(MainWindowSplashy, db, nfc)
+
+    # start the GUI
+    MainWindowSplashy.show()
+
+    # run the application
+    sys.exit(app.exec_())
