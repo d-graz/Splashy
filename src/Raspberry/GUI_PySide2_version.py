@@ -291,7 +291,7 @@ class Ui_MainWindowSplashy(object):
         self.label_nickname5.setText(_translate("MainWindowSplashy", "Name1"))
         self.labelSplashyWeeklyGoal.setText(_translate("MainWindowSplashy", "TextLabel"))
 
-
+    
     
     #ADDING FUNCTIONALITIES TO THE GUI
     #########################################################################################################################à
