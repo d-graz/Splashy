@@ -189,7 +189,6 @@ class Ui_MainWindowSplashy(object):
         self.retranslateUi(MainWindowSplashy)
         QtCore.QMetaObject.connectSlotsByName(MainWindowSplashy)
 
-
         # timer per alternare le label delle stats e del ranking
         self.timer = QTimer(MainWindowSplashy)
         self.timer.timeout.connect(self.toggle_labels)
@@ -199,6 +198,12 @@ class Ui_MainWindowSplashy(object):
         self.timerNFC = QTimer(MainWindowSplashy)
         self.timerNFC.timeout.connect(self.toggle_labels_NFC)
         self.timerNFC.start(400)  # Timer ogni 400 millisecondi (0.4 secondi)
+
+        # timer update di variabili e schermata
+        self.timerUpdate = QTimer(MainWindowSplashy)
+        self.timerUpdate.timeout.connect(self.updateUi)
+        self.timerUpdate.start(20)  # Timer ogni 20 millisecondi (0.02 secondi)
+        
 
 
 
@@ -269,6 +274,7 @@ class Ui_MainWindowSplashy(object):
     def retranslateUi(self, MainWindowSplashy):
         _translate = QtCore.QCoreApplication.translate
         MainWindowSplashy.setWindowTitle(_translate("MainWindowSplashy", "MainWindow"))
+
         self.label_3.setText(_translate("MainWindowSplashy", "WELCOME BACK UserNickname !"))
         self.label_5.setText(_translate("MainWindowSplashy", "#UserPosition with UserTotalLiters L"))
         self.labelPlasticSaved.setText(_translate("MainWindowSplashy", "kg of plastic saved"))
@@ -285,8 +291,10 @@ class Ui_MainWindowSplashy(object):
         self.label_nickname5.setText(_translate("MainWindowSplashy", "Name1"))
         self.labelSplashyWeeklyGoal.setText(_translate("MainWindowSplashy", "TextLabel"))
 
+    
     #ADDING FUNCTIONALITIES TO THE GUI
     #########################################################################################################################à
+    def updateUi(self):
     # define constant variables value
 
         splashyWeeklyGoal = 1400 #in liters
@@ -329,6 +337,8 @@ class Ui_MainWindowSplashy(object):
         thirdTotalLiters = getFromDB
         fourthTotalLiters = getFromDB
         fifthTotalLiters = getFromDB
+        
+        #print("check loop update")
 
 
         
@@ -360,6 +370,7 @@ class Ui_MainWindowSplashy(object):
         self.label_literRanking4.setText(str(fourthTotalLiters) + " L")
         self.label_literRanking5.setText(str(fifthTotalLiters) + " L")
         
+
 
 if __name__ == "__main__":
     import sys
