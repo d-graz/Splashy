@@ -1,9 +1,8 @@
 from DatabaseConnectionManager import DatabaseConnectionManager
 from NFCReader import RFIDReader
 from SerialManager import SerialManager
-from PySide6 import QtWidgets
+from PySide2 import QtWidgets
 from GUI import Ui_MainWindowSplashy
-import time
 import sys
 
 if __name__ == "__main__":
