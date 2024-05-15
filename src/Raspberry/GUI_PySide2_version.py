@@ -161,7 +161,7 @@ class Ui_MainWindowSplashy(object):
         self.label_4.setStyleSheet("background: transparent; color: white; font: bold")
         self.label_4.setObjectName("label_4")
         self.labelPlasticSaved = QtWidgets.QLabel(self.centralwidget)
-        self.labelPlasticSaved.setGeometry(QtCore.QRect(130, 150, 170, 17))
+        self.labelPlasticSaved.setGeometry(QtCore.QRect(130, 150, 199, 17))
         self.labelPlasticSaved.setStyleSheet("background: transparent; color: white;")
         self.labelPlasticSaved.setObjectName("labelPlasticSaved")
         self.label_literRanking1_2.setText(str("1°"))
@@ -291,6 +291,7 @@ class Ui_MainWindowSplashy(object):
         self.label_nickname5.setText(_translate("MainWindowSplashy", "Name1"))
         self.labelSplashyWeeklyGoal.setText(_translate("MainWindowSplashy", "TextLabel"))
 
+
     
     #ADDING FUNCTIONALITIES TO THE GUI
     #########################################################################################################################à
@@ -298,7 +299,7 @@ class Ui_MainWindowSplashy(object):
     # define constant variables value
 
         splashyWeeklyGoal = 1400 #in liters
-        waterPlasticRatio = 0.2 #kilograms of plastic per liter of water
+        waterPlasticRatio = 0.035 #kilograms of plastic per liter of water           1 L (water)≈ 0.035 kg (plastic)
 
     # read value from fluxometer and RFID sensor
         litersErogated = 1 #readFluxometer()
@@ -318,11 +319,11 @@ class Ui_MainWindowSplashy(object):
 
     
     # read values from DataBase ####################################
-        litersOfTheWeek = getFromDB 
-        plasticSaved = 0
-        plasticSaved = plasticSaved + litersErogated * waterPlasticRatio
+        litersOfTheWeek = getFromDB  
+        totalLiters = getFromDB
+        plasticSaved = totalLiters * waterPlasticRatio  
 
-        self.userNickname = getFromDB
+        self.userNickname = getFromDB 
         userTotalLiters = getFromDB
         userRankingPosition = getFromDB
 
@@ -332,12 +333,12 @@ class Ui_MainWindowSplashy(object):
         fourthNickname = getFromDB
         fifthNickname = getFromDB
 
-        firstTotalLiters = getFromDB
-        secondTotalLiters = getFromDB
-        thirdTotalLiters = getFromDB
-        fourthTotalLiters = getFromDB
+        firstTotalLiters = getFromDB 
+        secondTotalLiters = getFromDB 
+        thirdTotalLiters = getFromDB 
+        fourthTotalLiters = getFromDB 
         fifthTotalLiters = getFromDB
-        
+
         #print("check loop update")
 
 
@@ -350,7 +351,7 @@ class Ui_MainWindowSplashy(object):
 
         #labels
         self.labelSplashyWeeklyGoal.setText(str(splashyWeeklyGoal) + " L")
-        self.labelPlasticSaved.setText(str(plasticSaved) + " Kg of PLASTIC SAVED")
+        self.labelPlasticSaved.setText(str(round(plasticSaved, 4)) + " Kg of PLASTIC SAVED")
 
         #label user
         self.label_3.setText("WELCOME BACK " + str(self.userNickname) + "!")
