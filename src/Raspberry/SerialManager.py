@@ -37,7 +37,7 @@ class SerialManager:
     #  @details This method runs in an infinite loop, continuously reading data from Arduino and updating the database.
     def read_from_arduino(self):
         while True:
-            if self.connection and self.connection.in_waiting >= 4:
+            if self.connection and self.connection.in_waiting >= 3:
                 data = self.connection.readline().decode('utf-8').strip()
                 print(f"Received: {data}")
                 try:

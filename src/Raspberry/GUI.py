@@ -17,11 +17,13 @@ from PySide2.QtWidgets import *
 ##########################################################################################################
 class Ui_MainWindowSplashy(object):
     def setupUi(self, MainWindowSplashy, database_manager, nfc_reader):
+        self.userNickname = ""
         self.db = database_manager
         self.nfc = nfc_reader
         MainWindowSplashy.setObjectName("MainWindowSplashy")
         MainWindowSplashy.setEnabled(True)
-        MainWindowSplashy.resize(480, 320)
+        #MainWindowSplashy.resize(480, 320)
+        MainWindowSplashy.showFullScreen()
         MainWindowSplashy.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.637368, y2:0.943, stop:0 rgba(127, 163, 216, 255), stop:0.989637 rgba(236, 245, 255, 255))")
         
         self.centralwidget = QtWidgets.QWidget(MainWindowSplashy)
@@ -323,10 +325,15 @@ class Ui_MainWindowSplashy(object):
 
         ## get current user information
         identification, text = self.nfc.get_user()
-        quantity, ranking = self.db.get_user_quantity_and_ranking(identification)
-        self.userNickname = text
-        userTotalLiters = quantity
-        userRankingPosition = ranking
+        if identification is not None:
+            quantity, ranking = self.db.get_user_stats(identification)
+            self.userNickname = text
+            userTotalLiters = quantity
+            userRankingPosition = ranking
+        else:
+            self.userNickname = ""
+            userTotalLiters = 0
+            userRankingPosition = -1
         
         # update text of the labels, tables, ecc with the variables value
         

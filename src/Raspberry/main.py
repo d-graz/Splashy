@@ -24,6 +24,9 @@ if __name__ == "__main__":
     ui = Ui_MainWindowSplashy()
     ui.setupUi(MainWindowSplashy, db, nfc)
 
+    # start the cleanup thread for the database
+    db.start_clean_up_thread()
+
     # start the GUI
     MainWindowSplashy.show()
 

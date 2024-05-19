@@ -5,6 +5,8 @@ import mysql.connector
 from mysql.connector import Error
 import sys
 import threading
+import datetime
+import time
 
 ## @var __database_name__
 #  @brief The name of the database.
@@ -56,8 +58,11 @@ class DatabaseConnectionManager:
     #  @return A list of tuples containing the name and quantity of the top k records.
     def getTopK(self, k):
         top_k = self.__getTopK__(k)
-        if len(top_k) < k:
+        if top_k is None:
+            return [("-", 0)] * k
+        elif len(top_k) < k:
             top_k += [("None", 0)] * (k - len(top_k))
+        return top_k
 
     ## @brief Update the database with the given id, name, and quantity.
     #  @param id The id of the record to update.
@@ -75,9 +80,9 @@ class DatabaseConnectionManager:
                 cursor.execute(insert_query, (id, name, quantity))
             else:
                 # ID found, update the row
-                new_quantity = quantity + row[0]
+                new_quantity = quantity + float(row[0])
                 update_query = f"UPDATE {__table_name__} SET name = %s, quantity = %s WHERE id = %s"
-                cursor.execute(update_query, (name, new_quantity, id))
+                cursor.execute(update_query, (name, new_quantity, id,))
             self.db.commit()
     
     ## @brief Get the total quantity from the database.
@@ -95,9 +100,10 @@ class DatabaseConnectionManager:
     def getPlasticSaved(self):
         return self.getTotalQuantity() * self.water_plasic_ratio
     
-    ## @brief Delete all records from the table.
-    #  @details This method should be called once per month.
-    def deleteTable(self):
+    ## @private
+    # @brief Delete all records from the table.
+    #  @details This method should be called once per week.
+    def __deleteTable__(self):
         with self.lock:
             cursor = self.db.cursor()
             delete_query = f"DELETE FROM {__table_name__}"
@@ -123,11 +129,11 @@ class DatabaseConnectionManager:
     def __get_user_ranking__(self, id):
         with self.lock:
             cursor = self.db.cursor()
-            select_query = f"SELECT id, quantity FROM {__table_name__} ORDER BY quantity DESC"
+            select_query = f"SELECT id, quantity FROM {__table_name__} WHERE id != 'None' ORDER BY quantity DESC"
             cursor.execute(select_query)
             rows = cursor.fetchall()
             for rank, row in enumerate(rows, start=1):
-                if row[0] == id:
+                if str(row[0]) == str(id):
                     return rank
             return None
         
@@ -142,3 +148,30 @@ class DatabaseConnectionManager:
         if ranking is None:
             raise Exception("User not found")
         return quantity, ranking
+    
+    ## @private
+    # @brief Cleans up the database.
+    #  @details This method continuously checks a timestamp from a file and if more than 7 days have passed since that timestamp, it deletes a table from the database and writes the current timestamp to the file. 
+    #  If the file does not exist, it creates a new file and writes the current timestamp. 
+    #  The method then sleeps for an hour before repeating the process.
+    def __clean_up_database__(self):
+        while True:
+            try:
+                with open('timestamp.txt', 'r') as f:
+                    timestamp_str = f.read()
+                    timestamp = datetime.datetime.fromisoformat(timestamp_str)
+                if datetime.datetime.now() - timestamp > datetime.timedelta(days=7):
+                    self.__deleteTable__()
+                    with open('timestamp.txt', 'w') as f:
+                        f.write(datetime.datetime.now().isoformat())
+            except FileNotFoundError:
+                with open('timestamp.txt', 'w') as f:
+                    f.write(datetime.datetime.now().isoformat())
+            finally:
+                time.sleep(3600)
+
+    ## @brief Starts a new thread that runs the __clean_up_database__ method.
+    #  @details This method creates a new daemon thread that runs the __clean_up_database__ method and starts it.
+    #  As a daemon thread, it will automatically stop when all non-daemon threads have finished.
+    def start_clean_up_thread(self):
+        threading.Thread(target=self.__clean_up_database__, daemon=True).start()

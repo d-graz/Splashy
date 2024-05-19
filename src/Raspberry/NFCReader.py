@@ -4,6 +4,7 @@
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import threading
+import time
 
 ## @class RFIDReader
 #  @brief This class is responsible for reading NFC cards and managing the read data.
@@ -27,11 +28,13 @@ class RFIDReader:
                 print(f"ID: {identification}, text: {text}")
                 with self.lock:
                     # set the read data from the card
-                    self.id = identification
+                    self.id = str(identification)
                     self.text = text.strip()
-            except:
-                print("HW ERR on NFC module")
+            except Exception as e:
+                print(f"HW ERR on NFC module: {e}")
                 break
+            finally:
+                time.sleep(4)
 
     ## @brief Get the data from the last read NFC card and reset the stored data.
     #  @return A tuple containing the id and text from the last read NFC card.
