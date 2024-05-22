@@ -1,0 +1,18 @@
+[Unit]
+Description=Splashy Service
+After=graphical.target mariadb.service
+Wants=graphical.target
+Requires=mariadb.service
+
+[Service]
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/splashy/.Xauthority
+ExecStart=/usr/bin/python3 /home/splashy/Desktop/Raspberry/main.py
+WorkingDirectory=/home/splashy/Desktop/Raspberry/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=splashy
+
+[Install]
+WantedBy=multi-user.target

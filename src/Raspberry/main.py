@@ -4,8 +4,12 @@ from SerialManager import SerialManager
 from PySide2 import QtWidgets
 from GUI import Ui_MainWindowSplashy
 import sys
+import time
 
 if __name__ == "__main__":
+
+    # wait 5 seconds at startup
+    time.sleep(5)
 
     # set up the database connection
     db = DatabaseConnectionManager()
