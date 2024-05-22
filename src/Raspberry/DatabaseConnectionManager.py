@@ -146,12 +146,12 @@ class DatabaseConnectionManager:
         quantity = self.__get_user_quantity__(id)
         ranking = self.__get_user_ranking__(id)
         if ranking is None:
-            raise Exception("User not found")
+            return 0 , -1
         return quantity, ranking
     
     ## @private
     # @brief Cleans up the database.
-    #  @details This method continuously checks a timestamp from a file and if more than 7 days have passed since that timestamp, it deletes a table from the database and writes the current timestamp to the file. 
+    #  @details This method continuously checks a timestamp from a file and if more than 30 days have passed since that timestamp, it deletes a table from the database and writes the current timestamp to the file. 
     #  If the file does not exist, it creates a new file and writes the current timestamp. 
     #  The method then sleeps for an hour before repeating the process.
     def __clean_up_database__(self):
@@ -160,7 +160,7 @@ class DatabaseConnectionManager:
                 with open('timestamp.txt', 'r') as f:
                     timestamp_str = f.read()
                     timestamp = datetime.datetime.fromisoformat(timestamp_str)
-                if datetime.datetime.now() - timestamp > datetime.timedelta(days=7):
+                if datetime.datetime.now() - timestamp > datetime.timedelta(days=30):
                     self.__deleteTable__()
                     with open('timestamp.txt', 'w') as f:
                         f.write(datetime.datetime.now().isoformat())
