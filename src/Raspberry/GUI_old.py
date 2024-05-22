@@ -2,17 +2,14 @@
 
 
 import sys
-from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtWidgets import QTableWidgetItem
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtWidgets import QTableWidgetItem
 
-from PySide6.QtCore import QTimer
-from PySide6.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect, QSize, QTime, QUrl, Qt, QEvent)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient, QPen)
-from PySide6.QtWidgets import *
+from PySide2.QtCore import QTimer
+from PySide2.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect, QSize, QTime, QUrl, Qt, QEvent)
+from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient, QPen)
+from PySide2.QtWidgets import *
   
-#IMPORT PYSIDE2EXTN WIDGET YOU USED IN THE QTDESIGNER FOR DESIGNING.
-from PySide2extn.RoundProgressBar import roundProgressBar
-
 #python file GUIsplashy.py generated from GUIsplashy.ui 
 #USING COMMAND:  
 #   cd /home/gianluca/Desktop/splashy/python_env
@@ -20,11 +17,13 @@ from PySide2extn.RoundProgressBar import roundProgressBar
 ##########################################################################################################
 class Ui_MainWindowSplashy(object):
     def setupUi(self, MainWindowSplashy, database_manager, nfc_reader):
+        self.userNickname = ""
         self.db = database_manager
         self.nfc = nfc_reader
         MainWindowSplashy.setObjectName("MainWindowSplashy")
         MainWindowSplashy.setEnabled(True)
-        MainWindowSplashy.resize(480, 320)
+        #MainWindowSplashy.resize(480, 320)
+        MainWindowSplashy.showFullScreen()
         MainWindowSplashy.setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.637368, y2:0.943, stop:0 rgba(127, 163, 216, 255), stop:0.989637 rgba(236, 245, 255, 255))")
         
         self.centralwidget = QtWidgets.QWidget(MainWindowSplashy)
@@ -166,7 +165,7 @@ class Ui_MainWindowSplashy(object):
         self.label_4.setStyleSheet("background: transparent; color: white; font: bold")
         self.label_4.setObjectName("label_4")
         self.labelPlasticSaved = QtWidgets.QLabel(self.centralwidget)
-        self.labelPlasticSaved.setGeometry(QtCore.QRect(130, 150, 170, 17))
+        self.labelPlasticSaved.setGeometry(QtCore.QRect(130, 150, 199, 17))
         self.labelPlasticSaved.setStyleSheet("background: transparent; color: white;")
         self.labelPlasticSaved.setObjectName("labelPlasticSaved")
         self.label_literRanking1_2.setText(str("1°"))
@@ -194,9 +193,24 @@ class Ui_MainWindowSplashy(object):
         self.retranslateUi(MainWindowSplashy)
         QtCore.QMetaObject.connectSlotsByName(MainWindowSplashy)
 
+        # timer to alternate stats and ranking
         self.timer = QTimer(MainWindowSplashy)
         self.timer.timeout.connect(self.toggle_labels)
-        self.timer.start(5000)  # Timer ogni 5000 millisecondi (5 secondi)
+        self.timer.start(5000)
+
+        # timer fetch data from NFC reader (making related elements visible or not)
+        self.timerNFC = QTimer(MainWindowSplashy)
+        self.timerNFC.timeout.connect(self.toggle_labels_NFC)
+        self.timerNFC.start(400)
+
+        # timer fetch data from db
+        self.timerUpdate = QTimer(MainWindowSplashy)
+        self.timerUpdate.timeout.connect(self.updateUi)
+        self.timerUpdate.start(200)
+        
+
+
+
 
     def toggle_labels(self):
         # Codice per far sparire e apparire le label
@@ -222,7 +236,6 @@ class Ui_MainWindowSplashy(object):
             self.label_literRanking4_2.show()
             self.label_literRanking5_2.show()
 
-
         else:
             self.labelPlasticSaved.show()
             self.label_4.show()
@@ -246,11 +259,26 @@ class Ui_MainWindowSplashy(object):
             self.label_literRanking5_2.hide()
 
 
+
+    def toggle_labels_NFC(self):    
+        # Codice per far sparire e apparire label e frame legati al tag NFC
+        if self.userNickname == "" or self.userNickname == None:
+            self.label_3.hide()
+            self.label_5.hide()   
+            self.frame_2.hide() 
+
+        else:
+            self.label_3.show()
+            self.label_5.show()   
+            self.frame_2.show()    
+
+
         
 
     def retranslateUi(self, MainWindowSplashy):
         _translate = QtCore.QCoreApplication.translate
         MainWindowSplashy.setWindowTitle(_translate("MainWindowSplashy", "MainWindow"))
+
         self.label_3.setText(_translate("MainWindowSplashy", "WELCOME BACK UserNickname !"))
         self.label_5.setText(_translate("MainWindowSplashy", "#UserPosition with UserTotalLiters L"))
         self.labelPlasticSaved.setText(_translate("MainWindowSplashy", "kg of plastic saved"))
@@ -267,9 +295,13 @@ class Ui_MainWindowSplashy(object):
         self.label_nickname5.setText(_translate("MainWindowSplashy", "Name1"))
         self.labelSplashyWeeklyGoal.setText(_translate("MainWindowSplashy", "TextLabel"))
 
-        #ADDING FUNCTIONALITIES TO THE GUI
-        #########################################################################################################################à
     
+    
+    #ADDING FUNCTIONALITIES TO THE GUI
+    #########################################################################################################################à
+    def updateUi(self):
+    # define constant variables value
+
         # read values from database and nfc
         ## get global information
         splashyWeeklyGoal = self.db.liters_montly_goal
@@ -293,13 +325,17 @@ class Ui_MainWindowSplashy(object):
 
         ## get current user information
         identification, text = self.nfc.get_user()
-        quantity, ranking = self.db.get_user_quantity_and_ranking(identification)
-        userNickname = text
-        userTotalLiters = quantity
-        userRankingPosition = ranking
-
+        if identification is not None:
+            quantity, ranking = self.db.get_user_stats(identification)
+            self.userNickname = text
+            userTotalLiters = quantity
+            userRankingPosition = ranking
+        else:
+            self.userNickname = ""
+            userTotalLiters = 0
+            userRankingPosition = -1
         
-    # update text of the labels, tables, ecc with the variables value
+        # update text of the labels, tables, ecc with the variables value
         
         #progress bar
         self.progressBar.setMaximum(splashyWeeklyGoal)  # Imposta il valore massimo a 40
@@ -307,11 +343,11 @@ class Ui_MainWindowSplashy(object):
 
         #labels
         self.labelSplashyWeeklyGoal.setText(str(splashyWeeklyGoal) + " L")
-        self.labelPlasticSaved.setText(str(plasticSaved) + " Kg of PLASTIC SAVED")
+        self.labelPlasticSaved.setText(str(round(plasticSaved, 4)) + " Kg of PLASTIC SAVED")
 
         #label user
-        self.label_3.setText("WELCOME BACK " + str(userNickname) + "!")
-        self.label_5.setText("#" + str(userRankingPosition) + " with " + str(userTotalLiters) + " L")
+        self.label_3.setText("WELCOME BACK " + str(self.userNickname) + "!")
+        self.label_5.setText(str(userRankingPosition) + "°     with " + str(userTotalLiters) + " L")
 
     
         #ranking column nickname + " L"
@@ -328,6 +364,7 @@ class Ui_MainWindowSplashy(object):
         self.label_literRanking5.setText(str(fifthTotalLiters) + " L")
         
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -335,4 +372,4 @@ if __name__ == "__main__":
     ui = Ui_MainWindowSplashy()
     ui.setupUi(MainWindowSplashy)
     MainWindowSplashy.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec_())
