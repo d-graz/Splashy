@@ -97,6 +97,7 @@ bool Pump::next(){
         Serial.print(F("Water dispensed: "));
         Serial.println(this->water_dispensed);
     #endif
+    this->get_user_water_quantity(); //TODO: [MEDIUM] see if this is really necessary
     if(this->water_dispensed >= this->target_water_dispensed){
         #ifdef PUMP_DEBUG
             Serial.println(F("Target water dispensed reached"));

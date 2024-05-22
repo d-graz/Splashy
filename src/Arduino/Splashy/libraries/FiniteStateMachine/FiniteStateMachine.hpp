@@ -25,6 +25,7 @@ enum State {
     FILLED,  ///< Filled state.
     HAPPY,   ///< Happy state.
     SAD,     ///< Sad state.
+    PRE_FILLING, ///< Pre-filling state.
     StateCount ///< Counter of states.
 };
 
@@ -44,6 +45,7 @@ State petting(unsigned long int state_entering_time);
 State filled(unsigned long int state_entering_time);
 State happy(unsigned long int state_entering_time);
 State sad(unsigned long int state_entering_time);
+State pre_filling(unsigned long int state_entering_time);
 
 /**
  * @var _state_functions
@@ -58,7 +60,8 @@ StateFunction _state_functions[StateCount] = {
     petting,
     filled,
     happy,
-    sad
+    sad,
+    pre_filling
 };
 
 /**
@@ -77,6 +80,7 @@ void to_Petting_state();
 void to_Filled_state();
 void to_Happy_state();
 void to_Sad_state();
+void to_Pre_Filling_state();
 
 /**
  * @var _transition_functions
@@ -91,7 +95,8 @@ TransitionFunction _transition_functions[StateCount] = {
     to_Petting_state,
     to_Filled_state,
     to_Happy_state,
-    to_Sad_state
+    to_Sad_state,
+    to_Pre_Filling_state
 };
 
 /**

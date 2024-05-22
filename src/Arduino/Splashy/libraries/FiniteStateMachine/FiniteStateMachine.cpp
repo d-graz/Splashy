@@ -8,6 +8,7 @@
 #define RECHARGE_COUNT_THRESHOLD 5 ///< The number of times the penguin needs to be recharged before entering the happy state.
 byte recharge_count = 0; ///< The number of times the penguin has been recharged.
 #define PETTING_TIME 15000 ///< The time in milliseconds to spend in the petting state.
+#define PRE_FILLED_TIME 3000 ///< The time in milliseconds to spend in the pre-filling state.
 
 
 State idle(unsigned long int state_entering_time) {
@@ -157,6 +158,24 @@ State happy(unsigned long int state_entering_time){
     return State::HAPPY;
 }
 
+State pre_filling(unsigned long int state_entering_time){
+    #ifdef FINITE_STATE_MACHINE_DEBUG
+        Serial.println(F("Currently in PRE_FILLING"));
+    #endif
+    if (!ultrasonic_sensor->is_water_bottle_detected()){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Bottle not detected"));
+        #endif
+        return State::FILLED;
+    } else if (millis() >= state_entering_time + PRE_FILLED_TIME){
+        #ifdef FINITE_STATE_MACHINE_DEBUG
+            Serial.println(F("Time to leave PRE_FILLING"));
+        #endif
+        return State::FILLING;
+    }
+    return State::PRE_FILLING;
+}
+
 FiniteStateMachine::FiniteStateMachine() {
     this->current_state = State::IDLE;
     this->state_entering_time = millis();
@@ -207,10 +226,6 @@ void to_Attract_state(){
  * Start the pump up
 */
 void to_Filling_state(){
-    proximity_sensor->hibernate();
-    servo_controller->hibernate();
-    touch_sensor->hibernate();
-    servo_controller->home(false);
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Refill), F("Error loading refill animation"));
     handle_error(pump->activate(), F("Error activating pump to start filling process"));
     pump->activate_pump();
@@ -223,6 +238,19 @@ void to_Filling_state(){
 void to_Filled_state(){
     recharge_count++;
     handle_error(led_matrix->load_animation(LedMatrixAnimation::Filled), F("Error loading filled animation"));
+}
+
+/**
+ * Hibernates the proximity sensor and touch sensor
+ * Homes the servo motor
+ * Loads the pre fill animation on the led matrix
+*/
+void to_Pre_Filling_state(){
+    proximity_sensor->hibernate();
+    servo_controller->hibernate();
+    touch_sensor->hibernate();
+    servo_controller->home(false);
+    handle_error(led_matrix->load_animation(LedMatrixAnimation::PreFill), F("Error loading pre fill animation"));
 }
 
 /**
