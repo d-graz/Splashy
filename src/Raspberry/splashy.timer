@@ -1,0 +1,9 @@
+[Unit]
+Description=Delay Splashy Service Start by 10 seconds
+
+[Timer]
+OnBootSec=30sec
+Unit=splashy.service
+
+[Install]
+WantedBy=timers.target
