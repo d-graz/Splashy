@@ -1,7 +1,7 @@
 /**
  * @file FiniteStateMachine.hpp
  * @brief Header file for the FiniteStateMachine class.
- * @version 1.1
+ * @version 1.2
 */
 #ifndef __FINITE_STATE_MACHINE__
 #define __FINITE_STATE_MACHINE__
@@ -38,13 +38,68 @@ enum State {
 typedef State (*StateFunction)(unsigned long int state_entering_time);
 
 // State function declarations
+/**
+ * @brief Represents the idle state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State idle(unsigned long int state_entering_time);
+
+/**
+ * @brief Represents the attract state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State attract(unsigned long int state_entering_time);
+
+/**
+ * @brief Represents the filling state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State filling(unsigned long int state_entering_time);
+
+/**
+ * @brief Represents the petting state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State petting(unsigned long int state_entering_time);
+
+/**
+ * @brief Represents the filled state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State filled(unsigned long int state_entering_time);
+
+/**
+ * @brief Represents the happy state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State happy(unsigned long int state_entering_time);
+
+/**
+ * @brief Represents the sad state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State sad(unsigned long int state_entering_time);
+
+/**
+ * @brief Represents the pre_filling state of the robot.
+ * 
+ * @param state_entering_time The time at which the state was entered.
+ * @return State The current state of the robot.
+ */
 State pre_filling(unsigned long int state_entering_time);
 
 /**
@@ -72,14 +127,44 @@ StateFunction _state_functions[StateCount] = {
  */
 typedef void (*TransitionFunction)();
 
-// Transition function declarations
+/**
+ * @brief Transition function to switch the robot to the Idle state.
+ */
 void to_Idle_state();
+
+/**
+ * @brief Transition function to switch the robot to the Attract state.
+ */
 void to_Attract_state();
+
+/**
+ * @brief Transition function to switch the robot to the Filling state.
+ */
 void to_Filling_state();
+
+/**
+ * @brief Transition function to switch the robot to the Petting state.
+ */
 void to_Petting_state();
+
+/**
+ * @brief Transition function to switch the robot to the Filled state.
+ */
 void to_Filled_state();
+
+/**
+ * @brief Transition function to switch the robot to the Happy state.
+ */
 void to_Happy_state();
+
+/**
+ * @brief Transition function to switch the robot to the Sad state.
+ */
 void to_Sad_state();
+
+/**
+ * @brief Transition function to switch the robot to the Pre_Filling state.
+ */
 void to_Pre_Filling_state();
 
 /**

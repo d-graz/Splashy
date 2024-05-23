@@ -13,22 +13,22 @@
 #include "../Pump/Pump.hpp"
 #include "../TouchSensor/TouchSensor.hpp"
 
-// led matrix object
+/// @brief LED matrix object.
 LedMatrix *led_matrix;
 
-// sevo controller
+/// @brief Servo controller object.
 ServoController *servo_controller;
 
-// proximity sensor
+/// @brief Proximity sensor object.
 ProximitySensor *proximity_sensor;
 
-// ultrasonic sensor
+/// @brief Ultrasonic sensor object.
 UltrasonicSensor *ultrasonic_sensor;
 
-// pump
+/// @brief Pump object.
 Pump *pump;
 
-// touch sensor
+/// @brief Touch sensor object.
 TouchSensor *touch_sensor;
 
 #endif

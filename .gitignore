@@ -42,3 +42,6 @@
 
 # SD
 **/*.img
+
+# Documentation
+**/documentation/output/**

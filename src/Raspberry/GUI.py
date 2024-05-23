@@ -1,5 +1,7 @@
-# Form implementation generated from reading ui file 'GUIsplashy.ui'
-
+##@file GUI.py
+#@brief This file was partially generated using Qt Designer.
+#
+#This file contains the GUI implementation for the application. It was partially generated using Qt Designer, and then further modified to suit the needs of the application.
 
 import sys
 from PySide2 import QtCore, QtGui, QtWidgets
@@ -10,12 +12,17 @@ from PySide2.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTi
 from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient, QPen)
 from PySide2.QtWidgets import *
   
-#python file GUIsplashy.py generated from GUIsplashy.ui 
-#USING COMMAND:  
-#   cd /home/gianluca/Desktop/splashy/python_env
-#   pyuic5 GUIsplashy.ui  -o GUIsplashy.py
-##########################################################################################################
+## @class Ui_MainWindowSplashy
+#  @brief This class is responsible for setting up the user interface of the main window.
+#
 class Ui_MainWindowSplashy(object):
+
+    ## This function sets up the user interface for the MainWindowSplashy class.
+    #  @param self The object pointer.
+    #  @param MainWindowSplashy The main window object.
+    #  @param database_manager The database manager object.
+    #  @param nfc_reader The NFC reader object.
+    #  @return None.
     def setupUi(self, MainWindowSplashy, database_manager, nfc_reader):
         self.userNickname = ""
         self.db = database_manager
@@ -199,11 +206,15 @@ class Ui_MainWindowSplashy(object):
         self.timerUpdate = QTimer(MainWindowSplashy)
         self.timerUpdate.timeout.connect(self.updateUi)
         self.timerUpdate.start(200)
-        
 
-
-
-
+    ## @brief Toggles the visibility of certain labels and the progress bar.
+    #
+    # This method is responsible for controlling the visibility of certain labels and the progress bar in the user interface.
+    # If the labelPlasticSaved is visible, it hides the labelPlasticSaved, label_4, progressBar, and labelMonthlyGoal, and shows the labels related to the ranking.
+    # If the labelPlasticSaved is not visible, it shows the labelPlasticSaved, label_4, progressBar, and labelMonthlyGoal, and hides the labels related to the ranking.
+    # This is useful for switching between different views in the user interface.
+    #
+    # @param self The instance of the class.
     def toggle_labels(self):
         # Codice per far sparire e apparire le label
         if self.labelPlasticSaved.isVisible():
@@ -250,8 +261,13 @@ class Ui_MainWindowSplashy(object):
             self.label_literRanking4_2.hide()
             self.label_literRanking5_2.hide()
 
-
-
+    ## @brief Toggles the visibility of certain labels and frames related to NFC tag.
+    #
+    # This method is responsible for controlling the visibility of certain labels and frames in the user interface that are related to the NFC tag.
+    # If the user's nickname is empty or None, the labels and frame are hidden. Otherwise, they are shown.
+    # This is useful for showing or hiding information based on whether a user is currently identified by an NFC tag.
+    #
+    # @param self The instance of the class.
     def toggle_labels_NFC(self):    
         # Codice per far sparire e apparire label e frame legati al tag NFC
         if self.userNickname == "" or self.userNickname == None:
@@ -263,10 +279,15 @@ class Ui_MainWindowSplashy(object):
             self.label_3.show()
             self.label_5.show()   
             self.frame_2.show()    
-
-
-        
-
+  
+    ## @brief Translates the user interface of MainWindowSplashy.
+    #
+    # This method is responsible for translating the user interface of MainWindowSplashy. It uses the QtCore.QCoreApplication.translate method 
+    # to translate the text of various elements in the user interface, such as labels and the window title.
+    # The translation is based on the current language setting of the application.
+    #
+    # @param self The instance of the class.
+    # @param MainWindowSplashy The main window of the application, which contains the user interface elements to be translated.
     def retranslateUi(self, MainWindowSplashy):
         _translate = QtCore.QCoreApplication.translate
         MainWindowSplashy.setWindowTitle(_translate("MainWindowSplashy", "MainWindow"))
@@ -286,11 +307,16 @@ class Ui_MainWindowSplashy(object):
         self.label_nickname4.setText(_translate("MainWindowSplashy", "Name1"))
         self.label_nickname5.setText(_translate("MainWindowSplashy", "Name1"))
         self.labelMonthlyGoal.setText(_translate("MainWindowSplashy", "TextLabel"))
-
     
-    
-    #ADDING FUNCTIONALITIES TO THE GUI
-    #########################################################################################################################à
+    ## @brief Updates the user interface with the latest data.
+    #
+    # This method retrieves data from the database and NFC, calculates some statistics, and updates the user interface with these data.
+    # It first defines some constant variables, then reads values from the database and NFC.
+    # It gets global information such as the monthly goal, liters of the week, plastic saved, and bottles saved.
+    # It also retrieves ranking information and current user information.
+    # Finally, it updates the text of the labels, tables, etc. with the retrieved and calculated values.
+    #
+    # @param self The instance of the class.
     def updateUi(self):
     # define constant variables value
 
@@ -360,17 +386,26 @@ class Ui_MainWindowSplashy(object):
         self.label_literRanking4.setText(self.float_to_string(fourthTotalLiters) + " L")
         self.label_literRanking5.setText(self.float_to_string(fifthTotalLiters) + " L")
 
+    ## @brief Converts a float value to a string, formatted to two decimal places.
+    #
+    # This method takes a float value as input and converts it to a string. The float is formatted to two decimal places. 
+    # This is useful for displaying float values in a user interface, or when precise control over the formatting is required.
+    #
+    # @param value The float value to be converted to a string. This should be a valid float. If the input is not a valid float, 
+    # the method will raise a ValueError.
+    #
+    # @return A string representation of the input value, formatted to two decimal places.
     def float_to_string(self, value):
         number = float(value)
         return "{:.2f}".format(number)
         
 
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindowSplashy = QtWidgets.QMainWindow()
-    ui = Ui_MainWindowSplashy()
-    ui.setupUi(MainWindowSplashy, None, None)
-    MainWindowSplashy.show()
-    sys.exit(app.exec_())
+#if __name__ == "__main__":
+#    import sys
+#    app = QtWidgets.QApplication(sys.argv)
+#    MainWindowSplashy = QtWidgets.QMainWindow()
+#    ui = Ui_MainWindowSplashy()
+#    ui.setupUi(MainWindowSplashy, None, None)
+#    MainWindowSplashy.show()
+#    sys.exit(app.exec_())
