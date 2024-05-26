@@ -18,9 +18,9 @@ State idle(unsigned long int state_entering_time) {
     if(ultrasonic_sensor->is_water_bottle_detected()){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Bottle detected"));
-            Serial.println(F("Transitioning to FILLING"));
+            Serial.println(F("Transitioning to PRE_FILLING"));
         #endif
-        return State::FILLING;
+        return State::PRE_FILLING;
     } else if (recharge_count >= RECHARGE_COUNT_THRESHOLD && millis() > state_entering_time + HAPPY_STATE_ACTIVATION_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("People are actually using me!"));
@@ -51,7 +51,7 @@ State attract(unsigned long int state_entering_time){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Bottle detected"));
         #endif
-        return State::FILLING;
+        return State::PRE_FILLING;
     } else if (touch_sensor->is_active()) {
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Petting detected"));
@@ -107,7 +107,7 @@ State petting(unsigned long int state_entering_time){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Bottle detected"));
         #endif
-        return State::FILLING;
+        return State::PRE_FILLING;
     } else if (millis() > state_entering_time + PETTING_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("End of pet time"));
@@ -125,7 +125,7 @@ State sad(unsigned long int state_entering_time){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Bottle detected"));
         #endif
-        return State::FILLING;
+        return State::PRE_FILLING;
     } else if (touch_sensor->is_active()){
          #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Petting detected"));
@@ -148,7 +148,7 @@ State happy(unsigned long int state_entering_time){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Bottle detected"));
         #endif
-        return State::FILLING;
+        return State::PRE_FILLING;
     } else if (millis() >= state_entering_time + HAPPY_TIME){
         #ifdef FINITE_STATE_MACHINE_DEBUG
             Serial.println(F("Time to leave HAPPY"));

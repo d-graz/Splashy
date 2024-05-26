@@ -1,7 +1,7 @@
 /**
  * @file FiniteStateMachine.hpp
  * @brief Header file for the FiniteStateMachine class.
- * @version 1.2
+ * @version 1.2.1
 */
 #ifndef __FINITE_STATE_MACHINE__
 #define __FINITE_STATE_MACHINE__
