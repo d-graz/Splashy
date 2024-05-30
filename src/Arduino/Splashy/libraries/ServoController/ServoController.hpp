@@ -21,10 +21,8 @@
 #define MAX_EXECUTION_TIME 300 ///< Maximum execution time in milliseconds.
 #define ANIMATION_LINE_LENGTH 70 ///< Length of animation line.
 
-//TODO:[SETUP] set the home position for servos
-//TODO: [SETUP] set the animation for the servos (with placeholder values)
-#define LEFT_WING_HOME_POSITION 90 ///< Home position for the left wing.
-#define RIGHT_WING_HOME_POSITION 90 ///< Home position for the right wing.
+#define LEFT_WING_HOME_POSITION 85 ///< Home position for the left wing.
+#define RIGHT_WING_HOME_POSITION 95 ///< Home position for the right wing.
 #define HEAD_HOME_POSITION 90 ///< Home position for the head.
 
 #define LEFT_WING_FILE_NAME "LEFT_WING" ///< File name for the left wing.

@@ -16,7 +16,7 @@
 #endif
 
 #define SLEEP_TIME 30 ///< Time to sleep after not detecting an object.
-#define TRIGGERING_DISTANCE 3 ///< Distance in cm that triggers the ultrasonic sensor.
+#define TRIGGERING_DISTANCE 5 ///< Distance in cm that triggers the ultrasonic sensor.
 #define MAX_DISTANCE 15 ///< Maximum distance in cm that the ultrasonic sensor can detect.
 #define FILTER_SIZE 9 ///< Size of the filter to smooth the distance readings.
 #define FILTER_UPDATE_SIZE 3 ///< Number of distance readings to update the filter. Note: FILTER_SIZE % FILTER_UPDATE_SIZE == 0

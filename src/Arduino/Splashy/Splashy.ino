@@ -3,7 +3,7 @@
 #include "libraries/Config/Config.hpp"
 
 
-#define DEBUG
+//#define DEBUG
 //#define WARN
 //#define TEST 
 // debug libraries
@@ -208,6 +208,8 @@ void loop() {
     #endif
   #endif
   handle_error(scheduler->executeAll(), F("Failed to execute the scheduler"));
+
+  delay(5);
 
   #ifdef DEBUG
     #ifdef TEST

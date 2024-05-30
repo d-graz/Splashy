@@ -1,7 +1,7 @@
 #include <Servo.h>
 
-#define SERVO_PIN_L 9  // Pin per il servo motore L
-#define SERVO_PIN_R 10 // Pin per il servo motore R
+#define SERVO_PIN_L 13  // Pin per il servo motore L
+#define SERVO_PIN_R 12 // Pin per il servo motore R
 #define SERVO_PIN_H 11 // Pin per il servo motore H
 
 Servo servoL;  // Crea un oggetto servo per controllare il servo motore L

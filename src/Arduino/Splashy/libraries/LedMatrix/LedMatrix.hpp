@@ -22,7 +22,7 @@
 //TODO: [SETUP] set the animation for the LED matrix.
 #define MATRIX_SIZE 8 ///< The size of the LED matrix.
 #define LED_MATRIX_DEVICES_COUNT 2 ///< The number of devices in the LED matrix.
-#define DEFAULT_BRIGHTNESS 8 ///< The default brightness of the LED matrix.
+#define DEFAULT_BRIGHTNESS 1 ///< The default brightness of the LED matrix.
 #define ANIMATION_LINE_LENGTH 11 ///< The length of each line in the animation file.
 
 /**

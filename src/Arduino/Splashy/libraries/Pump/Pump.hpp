@@ -13,10 +13,10 @@
 //#define PUMP_SIMULATION
 #endif
 
-#define FLOW_SENSOR_CONSTANT 0.01369863 ///< The constant to convert flow sensor pulses to litres.
+#define FLOW_SENSOR_CONSTANT 0.0007 ///< The constant to convert flow sensor pulses to litres.
 
 #define MINUMUM_WATER_DISPENSED 0.2 ///< Minimum amount of water that can be dispensed in litres.
-#define MAXIMUM_WATER_DISPENSED 1.5 ///< Maximum amount of water that can be dispensed in litres.
+#define MAXIMUM_WATER_DISPENSED 1.0 ///< Maximum amount of water that can be dispensed in litres.
 
 #include <Arduino.h>
 #include "../Config/Config.hpp"

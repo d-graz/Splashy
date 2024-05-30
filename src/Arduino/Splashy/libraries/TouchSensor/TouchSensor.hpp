@@ -11,14 +11,13 @@
 #include "../TaskManagement/TaskManagement.hpp"
 
 #ifdef DEBUG
-#define TOUCH_SENSOR_DEBUG
+//#define TOUCH_SENSOR_DEBUG
 #endif
 
-//TODO: [TEST] scoprire la causa delle oscillazioni + test del nuovo filtro
 #define SAMPLES 1500 ///< The number of samples to take when reading the touch sensor.
 #define THRESHOLD 200 ///< The threshold value for the touch sensor to be recognized as active.
-#define SLEEP_TIME 200 ///< The time to sleep between samples in milliseconds.
-#define FILTER_SIZE_TS 9 ///< The size of the filter to use when smoothing the sensor readings.
+#define SLEEP_TIME 400 ///< The time to sleep between samples in milliseconds.
+#define FILTER_SIZE_TS 12 ///< The size of the filter to use when smoothing the sensor readings.
 #define FILTER_UPDATE_SIZE_TS 3 ///< The number of samples to use when updating the filter.
 
 /**

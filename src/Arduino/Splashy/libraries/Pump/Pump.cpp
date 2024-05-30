@@ -26,6 +26,7 @@ void Pump::get_user_water_quantity(){
 
 void Pump::hibernate(){
     digitalWrite(PUMP_PIN, LOW);
+    delay(100);
     this->pump_active = false;
     Serial.println(this->water_dispensed);
     Serial.flush();
