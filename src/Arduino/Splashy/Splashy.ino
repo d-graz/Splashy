@@ -152,9 +152,9 @@ void setup() {
     Serial.println(F("Init TouchSensor and adding to the scheduler"));
   #endif
   touch_sensor = new TouchSensor("Touch");
-  handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
-  handle_error(scheduler->add_task(touch_sensor), F("Failed to add TouchSensor to the scheduler"));
-  handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
+  //handle_error(scheduler->executeByName(F("Led")), F("Failed to execute LedMatrix"));
+  //handle_error(scheduler->add_task(touch_sensor), F("Failed to add TouchSensor to the scheduler"));
+  //handle_error(scheduler->executeByName(F("Led"), 3), F("Failed to execute LedMatrix"));
 
   //init the fsm
   #ifdef DEBUG
