@@ -7,8 +7,12 @@
 *"Splashy is a penguin shaped robot that helps you in refilling your water bottle"*
 - Politecnico di Milan, Robotics \& Design course, A.Y. 2023/2024
 
+
+
+
+
 <div align="center">
-  <video src="https://github.com/user-attachments/assets/95a2d4e3-3e73-4272-86ca-d840ce8c92a2" width="1280" />
+  <video src="https://github.com/user-attachments/assets/b8be0e26-66e1-40f9-9cfe-064658929ba2" width="1280" />
 </div>
 
 ### Table of content
