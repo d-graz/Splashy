@@ -44,9 +44,11 @@ If you plan to recreate this project:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/9bc1cc19-a49e-4e46-a704-29662c4543e2" />
 </p>
-- Sofia Maria Ciccia (School of Design and Engineering)
-- Davide Grazzani    (me, Computer Science Engineer)
+
+From left to rigth:
 - Gianluca Miglietta (Automation Engineer)
+- Davide Grazzani    (me, Computer Science Engineer)
+- Sofia Maria Ciccia (School of Design and Engineering)
 - Enrico Virgili     (School of Design and Engineering)
 
 Supervisors:
