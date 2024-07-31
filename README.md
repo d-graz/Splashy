@@ -1,9 +1,7 @@
 # Splashy
 <p align="center">
-  <img src="documentation/images/logo_scaled.jpeg" />
+  <img src="https://github.com/user-attachments/assets/f5fed4ba-afbe-40ae-9c03-79528b048abe" />
 </p>
-
-![logo_final](https://github.com/user-attachments/assets/f5fed4ba-afbe-40ae-9c03-79528b048abe)
 
 
 *"Splashy is a penguin shaped robot that helps you in refilling your water bottle"*
